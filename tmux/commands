@@ -1,0 +1,18 @@
+# Global commands - one per line
+# Format: description | command
+# Lines starting with # are ignored
+
+# Git
+Git status | git status
+Git pull | git pull
+Git fetch all | git fetch --all
+
+# Node/NPM
+Install deps | npm install
+Dev server | npm run dev
+Build | npm run build
+Run tests | npm test
+
+# System
+Disk usage | df -h
+Port 3000 | lsof -i :3000
