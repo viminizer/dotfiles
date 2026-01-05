@@ -40,6 +40,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
+      inlay_hints = { enabled = false },
       servers = {
         -- JavaScript/TypeScript (disabled - using LazyVim's vtsls extra instead)
         ts_ls = { enabled = false },
