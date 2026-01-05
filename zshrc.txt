@@ -1,0 +1,80 @@
+# =========================================================
+# ZSHRC — optimized for speed
+# =========================================================
+#
+# DEPENDENCIES (install on new machine):
+#   brew install zsh-autosuggestions fzf zoxide powerlevel10k
+#
+# =========================================================
+
+setopt NO_BEEP
+
+# -------------------------
+# History
+# -------------------------
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE="$HOME/.zsh_history"
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt SHARE_HISTORY
+
+# -------------------------
+# Completion (cached)
+# -------------------------
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
+
+# -------------------------
+# Plugins
+# -------------------------
+# Autosuggestions (fish-style, accept with Tab or →)
+source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Tab: accept suggestion if present, otherwise normal completion
+autosuggest-accept-or-complete() {
+  if [[ -n "$POSTDISPLAY" ]]; then
+    zle autosuggest-accept
+  else
+    zle expand-or-complete
+  fi
+}
+zle -N autosuggest-accept-or-complete
+bindkey '\t' autosuggest-accept-or-complete
+
+# fzf keybindings (Ctrl+R for history, Ctrl+T for files)
+source /usr/local/opt/fzf/shell/key-bindings.zsh
+source /usr/local/opt/fzf/shell/completion.zsh
+
+# zoxide (use 'cd' to jump to directories, e.g., 'cd proj')
+eval "$(zoxide init zsh --cmd cd)"
+
+# -------------------------
+# Homebrew
+# -------------------------
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+
+#
+# Claude Code CLI
+# -------------------------
+export PATH="$HOME/.claude/local/bin:$PATH"
+
+# -------------------------
+# Powerlevel10k
+# -------------------------
+[ -f /usr/local/opt/powerlevel10k/share/powerlevel10k/powerlevel10k.zsh-theme ] && \
+  source /usr/local/opt/powerlevel10k/share/powerlevel10k/powerlevel10k.zsh-theme
+[ -f "$HOME/.p10k.zsh" ] && source "$HOME/.p10k.zsh"
+
+# -------------------------
+# Environment
+# -------------------------
+export EDITOR="nvim"
+export VISUAL="nvim"
+export LANG="en_US.UTF-8"
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
