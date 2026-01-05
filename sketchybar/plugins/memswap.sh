@@ -1,14 +1,13 @@
 #!/bin/sh
 
-DEFCOLOR="0x44FFFFFF"
-ALERTCOLOR="0xAAFF0000"
+# Tokyo Night colors
+FG_MUTED="0xff565f89"
+RED="0xfff7768e"
+
 TOTALSWAP="$(sysctl vm.swapusage | awk '{print $4}')"
 
-clr=""
 if [ "$TOTALSWAP" != "0.00M" ]; then
-    clr="$ALERTCOLOR"
+  sketchybar --set "$NAME" label="$TOTALSWAP" icon.color="$RED" label.color="$RED"
 else
-    clr="$DEFCOLOR"
+  sketchybar --set "$NAME" label="$TOTALSWAP" icon.color="$FG_MUTED" label.color="$FG_MUTED"
 fi
-
-sketchybar --set "$NAME" label="$TOTALSWAP" icon.color="$clr" label.color="$clr"

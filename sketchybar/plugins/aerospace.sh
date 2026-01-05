@@ -1,10 +1,25 @@
 #!/usr/bin/env bash
 
-# make sure it's executable with:
-# chmod +x ~/.config/sketchybar/plugins/aerospace.sh
+# Tokyo Night colors
+FOCUSED_BG="0xff3d59a1"
+FOCUSED_FG="0xffc0caf5"
+UNFOCUSED_BG="0xff292e42"
+UNFOCUSED_FG="0xffc0caf5"
+ACCENT="0xff7aa2f7"
 
 if [ "$1" = "$FOCUSED_WORKSPACE" ]; then
-  sketchybar --set $NAME background.color=0x88FF00FF label.shadow.drawing=on icon.shadow.drawing=on background.border_width=2
+  sketchybar --set "$NAME" \
+    background.color=$FOCUSED_BG \
+    background.height=22 \
+    icon.color=$FOCUSED_FG \
+    label.color=$FOCUSED_FG \
+    background.border_color=$ACCENT \
+    background.border_width=1
 else
-  sketchybar --set $NAME background.color=0x44FFFFFF label.shadow.drawing=off icon.shadow.drawing=off background.border_width=0
+  sketchybar --set "$NAME" \
+    background.color=$UNFOCUSED_BG \
+    background.height=22 \
+    icon.color=$UNFOCUSED_FG \
+    label.color=$UNFOCUSED_FG \
+    background.border_width=0
 fi
