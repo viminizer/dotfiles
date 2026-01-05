@@ -96,6 +96,13 @@ for mid in $(aerospace list-monitors | cut -c1); do
   done
 done
 
+# Always show the focused workspace at startup
+FOCUSED="$(aerospace list-workspaces --focused)"
+sketchybar --set space.$FOCUSED drawing=on
+
+# Trigger initial workspace change event to highlight focused workspace
+sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$FOCUSED"
+
 # Invisible separator (handles workspace window updates)
 sketchybar --add item space_separator left \
   --set space_separator \
