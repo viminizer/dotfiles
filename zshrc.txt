@@ -58,10 +58,10 @@ eval "$(zoxide init zsh --cmd cd)"
 # -------------------------
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 
-#
+# -------------------------
 # Claude Code CLI
 # -------------------------
-export PATH="$HOME/.claude/local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.claude/local/bin:$PATH"
 
 # -------------------------
 # Powerlevel10k
