@@ -13,7 +13,7 @@ return {
         suffix = "",
       },
       image = "󰥶 ",
-      email = "󰀓 ",
+      email = "󰇮 ",
       hyperlink = "󰌹 ",
       highlight = "RenderMarkdownLink",
       wiki = {
@@ -42,11 +42,11 @@ return {
       bullet = false,
       right_pad = 1,
       unchecked = {
-        icon = "󰄱 ",
+        icon = "  ",
         highlight = "RenderMarkdownUnchecked",
       },
       checked = {
-        icon = "󰱒 ",
+        icon = "  ",
         highlight = "RenderMarkdownChecked",
       },
       custom = {
@@ -56,7 +56,7 @@ return {
     bullet = {
       enabled = true,
       render_modes = false,
-      icons = { "●", "○", "◆", "◇" },
+      icons = { "󰫣 ", "  ", "●", "○", "◆", "◇" },
       ordered_icons = function(ctx)
         local value = vim.trim(ctx.value)
         local index = tonumber(value:sub(1, #value - 1))
