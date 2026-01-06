@@ -74,6 +74,10 @@ run = 'layout floating'
 if.app-id = 'com.apple.systemuiserver'
 run = 'layout floating'
 
+[[on-window-detected]]
+if.app-id = 'com.viminizer.goliath'
+run = 'layout floating'
+
 # Auto-assign apps to workspaces
 [[on-window-detected]]
 if.app-id = 'com.apple.Safari'
