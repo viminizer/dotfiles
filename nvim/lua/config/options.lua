@@ -1,4 +1,8 @@
 -- Options are automatically loaded before lazy.nvim startup
+
+-- Root detection patterns (used by file picker)
+vim.g.root_spec = { "lsp", { ".git", "lua", "package.json", "Cargo.toml", "go.mod", "pom.xml" }, "cwd" }
+
 vim.opt.breakindent = true
 vim.opt.wrap = true
 vim.opt.linebreak = true

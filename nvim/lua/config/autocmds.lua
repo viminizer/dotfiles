@@ -1,3 +1,13 @@
+-- Set working directory to the director Neovim was opened with
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    local arg = vim.fn.argv(0)
+    if arg ~= "" and vim.fn.isdirectory(arg) == 1 then
+      vim.cmd.cd(arg)
+    end
+  end,
+})
+
 --iAuto-reload files when changed externally
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
   pattern = "*",

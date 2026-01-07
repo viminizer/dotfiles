@@ -17,4 +17,4 @@ Run tests | npm test
 Disk usage | df -h
 Port 3000 | lsof -i :3000
 build | ./build.sh
-Run the game | ./run.sh
+Play | ./run.sh
