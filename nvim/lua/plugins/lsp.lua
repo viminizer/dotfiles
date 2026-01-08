@@ -37,6 +37,7 @@ return {
     },
   },
   -- LSP configuration
+  --
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -44,7 +45,22 @@ return {
       servers = {
         -- JavaScript/TypeScript (disabled - using LazyVim's vtsls extra instead)
         ts_ls = { enabled = false },
-        vtsls = {}, -- Use vtsls for TypeScript
+        -- vtsls = { enabled = true }, -- Use vtsls for TypeScript
+        vtsls = {
+          enabled = true,
+          settings = {
+            typescript = {
+              suggest = {
+                completeFunctionCalls = false,
+              },
+            },
+            javascript = {
+              suggest = {
+                completeFunctionCalls = false,
+              },
+            },
+          },
+        },
         eslint = {},
         -- C/C++
         clangd = {

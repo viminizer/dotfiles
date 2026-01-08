@@ -17,6 +17,7 @@ return {
     },
     explorer = {
       replace_netrw = true,
+      follow_file = false,
       win = {
         border = "rounded",
         backdrop = false,
