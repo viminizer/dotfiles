@@ -4,27 +4,6 @@
             "complex_modifications": {
                 "rules": [
                     {
-                        "description": "Control+Backspace → Option+Backspace",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "delete_or_backspace",
-                                    "modifiers": {
-                                        "mandatory": ["control"],
-                                        "optional": ["any"]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "delete_or_backspace",
-                                        "modifiers": ["option"]
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
                         "description": "Tap Caps Lock for ESC or Hold for Control",
                         "manipulators": [
                             {
