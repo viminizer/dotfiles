@@ -18,6 +18,7 @@ vim.opt.softtabstop = 2
 vim.opt.expandtab = true -- Use tabs instead of spaces
 vim.opt.smarttab = true
 vim.opt.cursorline = true
+vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:hor25,r-cr-o:hor20"
 vim.opt.undofile = true
 vim.opt.mouse = "a"
 vim.opt.showmode = false
