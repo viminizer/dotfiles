@@ -1,13 +1,45 @@
-/ghostty
+# Tracked: aerospace, borders, karabiner, kitty, nvim, sketchybar, tmux, zsh
+# Everything else in ~/.config is ignored.
+
+# --- Credentials / tool state: never commit ---
+/tokscale
+/gh
+/cagent
+/claude-code
+/amp
+/devin
+/opencode
+/iterm2
+/jgit
+
+# --- Configs I don't track ---
 /btop
 /gitui
+/ghostty
+/uv
+/posting
+/flutter
+/fontforge
+/yazi
+/git
+
+# --- Old nvim copies ---
 /cnvim
 /nvim.backup
 /nvim.bak
+
+# --- Plugin/theme checkouts and generated state ---
 /kitty/kitty-themes
+/kitty/last-session.kitty-session
 /tmux/plugins
-uv
-posting
-git/ignore
-gh
-cagent
+/karabiner/automatic_backups
+
+# --- Noise ---
+tt.*
+.tests
+doc/tags
+debug
+.repro
+foo.*
+*.log
+data
