@@ -19,6 +19,55 @@ local function eclipse_profile()
   end
 end
 
+-- Format only the lines this working tree actually changed. Whole-file
+-- formatting is what polluted diffs, but the lines you just wrote still want
+-- formatting, so range-format each git hunk instead. Bottom-up, because
+-- formatting one hunk shifts the line numbers of everything below it.
+-- Diffed here rather than read from gitsigns: gitsigns recomputes hunks
+-- asynchronously behind a debounce, so at BufWritePre it is routinely still
+-- empty and nothing gets formatted.
+local function committed_lines(buf)
+  local path = vim.api.nvim_buf_get_name(buf)
+  local root = vim.fs.root(path, { ".git" })
+  if not root then
+    return nil
+  end
+  local rel = path:sub(#root + 2)
+  local out = vim.fn.systemlist({ "git", "-C", root, "show", "HEAD:" .. rel })
+  if vim.v.shell_error ~= 0 then
+    return nil
+  end
+  return out
+end
+
+local function format_range(buf, first, last)
+  local tail = vim.api.nvim_buf_get_lines(buf, last - 1, last, false)[1] or ""
+  vim.lsp.buf.format({
+    bufnr = buf,
+    range = { start = { first, 0 }, ["end"] = { last, #tail } },
+    timeout_ms = 3000,
+  })
+end
+
+local function format_changed_hunks(buf)
+  local current = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+  local committed = committed_lines(buf)
+  if not committed then
+    -- untracked file: all of it is new, so formatting it pollutes nothing
+    return format_range(buf, 1, #current)
+  end
+
+  local hunks = vim.diff(table.concat(committed, "\n"), table.concat(current, "\n"), { result_type = "indices" })
+  -- bottom-up, because formatting one hunk shifts the lines below it
+  for i = #hunks, 1, -1 do
+    local _, _, start, count = unpack(hunks[i])
+    -- pure deletions add no lines, so there is nothing to format
+    if count > 0 then
+      format_range(buf, start, math.min(start + count - 1, vim.api.nvim_buf_line_count(buf)))
+    end
+  end
+end
+
 return {
   {
     "neovim/nvim-lspconfig",
@@ -33,11 +82,11 @@ return {
       vim.env.JDTLS_JVM_ARGS =
         "-Xms256m -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:ActiveProcessorCount=4"
 
-      -- No format-on-save for Java. jdtls and the project's spotless profile
-      -- are two different Eclipse formatter builds, so saving rewrites lines
-      -- nobody touched and buries the real change in the diff. Format with
-      -- `./mvnw spotless:apply -Pcheck`, which is what CI checks against.
-      -- <leader>uf re-enables it for the current buffer.
+      -- No whole-file format-on-save for Java: jdtls and the project's spotless
+      -- profile are different Eclipse formatter builds, so it rewrites lines
+      -- nobody touched and buries the real change in the diff. Changed hunks are
+      -- still formatted, by the BufWritePre autocmd below. `mvn spotless:apply
+      -- -Pcheck` remains the authority, since that is what CI checks.
       vim.api.nvim_create_autocmd("FileType", {
         pattern = "java",
         group = vim.api.nvim_create_augroup("JavaNoAutoformat", { clear = true }),
@@ -48,6 +97,14 @@ return {
           vim.opt_local.shiftwidth = 4
           vim.opt_local.tabstop = 4
           vim.opt_local.softtabstop = 4
+        end,
+      })
+
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        pattern = "*.java",
+        group = vim.api.nvim_create_augroup("JavaFormatChangedHunks", { clear = true }),
+        callback = function(args)
+          format_changed_hunks(args.buf)
         end,
       })
     end,
