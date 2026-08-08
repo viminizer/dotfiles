@@ -55,8 +55,13 @@ function M.apply()
     highlight WinBar guibg=none ctermbg=none
     highlight WinBarNC guibg=none ctermbg=none
     highlight TreesitterContext guibg=none ctermbg=none
-    highlight CmpItemMenu guibg=none ctermbg=none
-    highlight CmpPmenu guibg=none ctermbg=none
+    highlight BlinkCmpMenu guibg=none ctermbg=none
+    highlight BlinkCmpMenuBorder guifg=#ffa500 guibg=none ctermbg=none
+    highlight BlinkCmpDoc guibg=none ctermbg=none
+    highlight BlinkCmpDocBorder guifg=#ffa500 guibg=none ctermbg=none
+    highlight BlinkCmpDocSeparator guifg=#ffa500 guibg=none ctermbg=none
+    highlight BlinkCmpSignatureHelp guibg=none ctermbg=none
+    highlight BlinkCmpSignatureHelpBorder guifg=#ffa500 guibg=none ctermbg=none
   ]])
 end
 
