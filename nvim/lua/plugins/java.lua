@@ -38,6 +38,11 @@ return {
         group = vim.api.nvim_create_augroup("JavaNoAutoformat", { clear = true }),
         callback = function()
           vim.b.autoformat = false
+          -- Java convention is 4, and nvim sends shiftwidth as the LSP
+          -- tabSize, which jdtls honours over the formatter profile.
+          vim.opt_local.shiftwidth = 4
+          vim.opt_local.tabstop = 4
+          vim.opt_local.softtabstop = 4
         end,
       })
     end,
