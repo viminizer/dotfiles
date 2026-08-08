@@ -18,6 +18,11 @@ return {
     },
   },
   opts = {
+    -- Default is "NC", whose top edge is a blank cell coloured by
+    -- NeoTreeTitleBar rather than a border character. Transparency strips that
+    -- background, leaving the float with no visible top. Rounded also matches
+    -- every other border in this config.
+    popup_border_style = "rounded",
     filesystem = {
       group_empty_dirs = true,
     },
