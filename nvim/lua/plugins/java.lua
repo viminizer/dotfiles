@@ -26,7 +26,12 @@ return {
     -- reading nvim's own environment before the server is spawned. Setting this
     -- via cmd_env is too late: that only reaches the child process.
     init = function()
-      vim.env.JDTLS_JVM_ARGS = "-Xms256m -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=100"
+      -- ActiveProcessorCount caps how many cores jdtls floods at once. Opening
+      -- this repo costs ~7 CPU-minutes either way (38MB of generated ANTLR
+      -- parsers, unavoidable), but spreading it over 4 cores instead of 9 is
+      -- the difference between an audible fan and a quiet one.
+      vim.env.JDTLS_JVM_ARGS =
+        "-Xms256m -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:ActiveProcessorCount=4"
 
       -- No format-on-save for Java. jdtls and the project's spotless profile
       -- are two different Eclipse formatter builds, so saving rewrites lines
@@ -49,6 +54,13 @@ return {
     opts = {
       servers = {
         jdtls = {
+          -- nvim otherwise kills the server the instant it sends shutdown, so
+          -- jdtls dies mid-write and logs failed index saves every time. This
+          -- costs the full duration on every quit: lsp.lua's
+          -- check_clients_closed polls a snapshot that never shrinks, so
+          -- vim.wait always runs to the deadline rather than exiting early.
+          -- Drop to 0 if the pause on :qa is more annoying than it is worth.
+          flags = { exit_timeout = 2000 },
           settings = {
             java = {
               autobuild = { enabled = false },
