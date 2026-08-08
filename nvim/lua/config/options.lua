@@ -3,47 +3,23 @@
 -- Root detection patterns (used by file picker)
 vim.g.root_spec = { "lsp", { ".git", "lua", "package.json", "Cargo.toml", "go.mod", "pom.xml" }, "cwd" }
 
+-- Only options that differ from the LazyVim/nvim defaults belong here.
 vim.opt.breakindent = true
-vim.opt.wrap = true
-vim.opt.linebreak = true
-vim.opt.autowriteall = true -- Enable auto write
-vim.opt.textwidth = 100
-vim.opt.autoread = true -- Automatically read files when changed externally
-vim.opt.updatetime = 200 -- Faster CursorHold for quicker file change detection
-vim.opt.autoindent = true -- Enable autoindent
-vim.opt.smartindent = true
-vim.opt.tabstop = 2 -- Number of visual spaces per TAB
-vim.opt.shiftwidth = 2 -- Indentation amount for autoindents
+vim.opt.wrap = true -- LazyVim disables wrap
+vim.opt.autowriteall = true -- LazyVim sets autowrite; this also writes on :bnext, :make, etc.
 vim.opt.softtabstop = 2
-vim.opt.expandtab = true -- Use tabs instead of spaces
-vim.opt.smarttab = true
-vim.opt.cursorline = true
 vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:hor25,r-cr-o:hor20"
-vim.opt.undofile = true
-vim.opt.mouse = "a"
-vim.opt.showmode = false
-vim.opt.signcolumn = "yes"
-vim.opt.inccommand = "split"
-vim.opt.scrolloff = 8
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-vim.opt.conceallevel = 2
+vim.opt.inccommand = "split" -- LazyVim uses "nosplit"
+vim.opt.scrolloff = 8 -- LazyVim uses 4
 vim.opt.concealcursor = "nc"
-vim.diagnostic.config({
-  update_in_insert = true, -- Update diagnostics while typing
-  underline = true,
-  virtual_text = { spacing = 4, prefix = "●" },
-  signs = true,
-  severity_sort = true,
-  float = {
-    border = "rounded", -- Rounded corners for a clean look
-    severity_sort = true, -- Sort the errors by severity (highest to lowest)
-    max_width = 80, -- Set a maximum width for the floating window to avoid overflow
-    max_height = 20, -- Set a maximum height to avoid the window becoming too large
-  },
-})
+vim.opt.updatetime = 500 -- CursorHold delay; below ~500 the CursorHold autocmds below poll too hard
+-- textwidth is set per-filetype in config/autocmds.lua, not globally.
+-- Diagnostic display lives in plugins/lsp.lua under nvim-lspconfig's `diagnostics` opts.
+-- Setting it here does nothing: LazyVim replaces the whole config when lspconfig loads.
+
+-- Every logged LSP message is a synchronous write; this file had grown to 326MB.
+-- Set to "debug" temporarily when you actually need to debug a language server.
+vim.lsp.set_log_level("off")
 
 -- Automatically open floating diagnostics on cursor hold
 local diag_float_grp = vim.api.nvim_create_augroup("DiagnosticFloat", { clear = true })

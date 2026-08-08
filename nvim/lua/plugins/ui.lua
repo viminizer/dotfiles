@@ -25,23 +25,16 @@ return {
       },
     },
   },
-  -- Completion menu with borders
+  -- Completion menu with borders (blink.cmp is LazyVim's engine; nvim-cmp is disabled)
   {
-    "hrsh7th/nvim-cmp",
-    opts = function(_, opts)
-      local cmp = require("cmp")
-      opts.window = {
-        completion = cmp.config.window.bordered({
-          border = "rounded",
-          winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
-        }),
-        documentation = cmp.config.window.bordered({
-          border = "rounded",
-          winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
-        }),
-      }
-      return opts
-    end,
+    "saghen/blink.cmp",
+    opts = {
+      completion = {
+        menu = { border = "rounded" },
+        documentation = { window = { border = "rounded" } },
+      },
+      signature = { window = { border = "rounded" } },
+    },
   },
   -- Noice with borders and transparent cmdline
   {

@@ -6,6 +6,7 @@ return {
   {
     "3rd/image.nvim",
     build = false,
+    lazy = true, -- loaded by diagram.nvim on markdown; nothing else needs it at startup
     opts = {
       backend = "kitty",
       processor = "magick_cli",

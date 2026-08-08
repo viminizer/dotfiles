@@ -1,5 +1,4 @@
 vim.keymap.set("i", ";;", "<Esc>o", { desc = "Insert new line below" })
-vim.keymap.set("i", "kk", "<Esc>", { desc = "Exit insert mode" })
 vim.keymap.set("n", "<leader>e", function()
   Snacks.explorer({ cwd = vim.fn.getcwd() })
 end, { desc = "Explorer (cwd)" })

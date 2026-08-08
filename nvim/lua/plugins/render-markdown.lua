@@ -32,10 +32,6 @@ return {
         youtube = { pattern = "youtube%.com", icon = "󰗃 " },
       },
     },
-    callout = {
-      note = { raw = "[!NOTE]", rendered = "󰋽 Note", highlight = "RenderMarkdownInfo" },
-      -- ... your other callout configs here ...
-    },
     checkbox = {
       enabled = true,
       render_modes = false,

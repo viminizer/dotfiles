@@ -24,15 +24,14 @@ return {
           },
         },
       })
-      vim.cmd.colorscheme("carbonfox")
-      -- Re-apply after VimEnter to ensure it sticks
-      vim.api.nvim_create_autocmd("VimEnter", {
-        callback = function()
-          vim.defer_fn(function()
-            vim.cmd.colorscheme("carbonfox")
-          end, 10)
-        end,
+      -- Registered here rather than in config/autocmds.lua: that file loads on
+      -- VeryLazy when nvim starts without a file argument, which is after the
+      -- colorscheme is applied, so the ColorScheme autocmd would never fire.
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        group = vim.api.nvim_create_augroup("Transparency", { clear = true }),
+        callback = require("util.transparency").apply,
       })
+      require("util.transparency").apply()
     end,
   },
   {

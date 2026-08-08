@@ -85,7 +85,7 @@ return {
           { icon = " ", key = "s", desc = "Restore Session", section = "session" },
           { icon = " ", key = "x", desc = "Lazy Extras", action = ":LazyExtras" },
           { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy" },
-          { icon = " ", key = "b", desc = "Spring Boot Init", action = ":Springtime" },
+          { icon = " ", key = "b", desc = "Lazy Health", action = ":checkhealth lazy" },
           { icon = " ", key = "q", desc = "Quit", action = ":qa" },
         },
       },

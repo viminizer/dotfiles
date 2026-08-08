@@ -38,10 +38,7 @@ require("lazy").setup({
     border = "rounded",
     backdrop = 0,
   },
-  checker = {
-    enabled = true, -- check for plugin updates periodically
-    notify = false, -- notify on update
-  }, -- automatically check for plugin updates
+  checker = { enabled = false }, -- no background git fetch; run :Lazy to check for updates
   performance = {
     rtp = {
       -- disable some rtp plugins

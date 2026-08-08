@@ -42,6 +42,15 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       inlay_hints = { enabled = false },
+      -- Merged into LazyVim's defaults, then passed to vim.diagnostic.config()
+      diagnostics = {
+        float = {
+          border = "rounded",
+          severity_sort = true,
+          max_width = 80,
+          max_height = 20,
+        },
+      },
       servers = {
         -- JavaScript/TypeScript (disabled - using LazyVim's vtsls extra instead)
         ts_ls = { enabled = false },
