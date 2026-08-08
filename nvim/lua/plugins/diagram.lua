@@ -34,7 +34,7 @@ return {
     },
     keys = {
       {
-        "<leader>cd",
+        "<leader>md",
         function()
           require("diagram").show_diagram_hover()
         end,
