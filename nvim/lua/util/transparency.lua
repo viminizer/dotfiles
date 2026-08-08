@@ -2,10 +2,14 @@ local M = {}
 
 function M.apply()
   vim.cmd([[
-    highlight minifilesnormal guibg=none ctermbg=none
-    highlight minifilesborder guifg=#ffa500 guibg=none
-    highlight minifilestitle guifg=#ffa500 guibg=none
-    highlight minifilestitlefocused guifg=#ffa500 guibg=none
+    highlight NeoTreeNormal guibg=none ctermbg=none
+    highlight NeoTreeNormalNC guibg=none ctermbg=none
+    highlight NeoTreeEndOfBuffer guibg=none ctermbg=none
+    highlight NeoTreeWinSeparator guifg=#ffa500 guibg=none
+    highlight NeoTreeFloatNormal guibg=none ctermbg=none
+    highlight NeoTreeFloatBorder guifg=#ffa500 guibg=none
+    highlight NeoTreeFloatTitle guifg=#ffa500 guibg=none
+    highlight NeoTreeTitleBar guifg=#ffa500 guibg=none
     highlight minitablinecurrent guifg=#ffa500 guibg=none
     highlight minitablinemodifiedcurrent guibg=none guifg=red
     highlight minitablinefill guibg=none
