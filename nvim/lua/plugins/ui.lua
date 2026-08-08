@@ -60,8 +60,8 @@ return {
             winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
           },
         },
-        -- LSP progress, bottom right. Defaults to winblend 30, which cannot
-        -- composite against a transparent background and renders a dark box.
+        -- Defaults to winblend 30, which cannot composite against a
+        -- transparent background and renders a dark box.
         mini = {
           win_options = {
             winblend = 0,
@@ -69,6 +69,38 @@ return {
           },
         },
       },
+      -- LSP progress goes to the statusline instead of a floating box. No float
+      -- can do what was asked: nvim draws it over the cells beneath it, and
+      -- winblend only dims the text underneath rather than letting both occupy
+      -- the same cell. The statusline has a row of its own, so it covers nothing.
+      routes = {
+        { filter = { event = "lsp", kind = "progress" }, opts = { skip = true } },
+      },
+      status = {
+        lsp_progress = { event = "lsp", kind = "progress" },
+      },
     },
+  },
+  {
+    "nvim-lualine/lualine.nvim",
+    opts = function(_, opts)
+      table.insert(opts.sections.lualine_x, 1, {
+        function()
+          local text = require("noice").api.status.lsp_progress.get() or ""
+          if #text > 50 then
+            text = text:sub(1, 49)
+            -- noice escapes % as %% for the statusline; truncating mid-pair
+            -- would leave a stray % that gets read as a format item
+            local _, count = text:gsub("%%", "")
+            text = (count % 2 == 1 and text:sub(1, #text - 1) or text) .. "…"
+          end
+          return text
+        end,
+        cond = function()
+          return package.loaded["noice"] and require("noice").api.status.lsp_progress.has()
+        end,
+        color = { fg = "#ffa500" },
+      })
+    end,
   },
 }
