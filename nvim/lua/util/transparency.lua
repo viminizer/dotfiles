@@ -18,6 +18,9 @@ function M.apply()
     highlight NoicePopupmenuBorder guifg=#ffa500 guibg=none
     highlight NoicePopupmenuSelected guibg=#3b4252
     highlight NoiceCmdline guibg=none ctermbg=none
+    highlight NoiceMini guibg=none ctermbg=none
+    highlight NoiceFormatProgressTodo guibg=none ctermbg=none
+    highlight NoiceFormatProgressDone guibg=none ctermbg=none
     highlight Pmenu guibg=none ctermbg=none
     highlight PmenuSel guibg=#3b4252
     highlight PmenuBorder guifg=#ffa500 guibg=none

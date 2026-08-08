@@ -60,6 +60,14 @@ return {
             winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
           },
         },
+        -- LSP progress, bottom right. Defaults to winblend 30, which cannot
+        -- composite against a transparent background and renders a dark box.
+        mini = {
+          win_options = {
+            winblend = 0,
+            winhighlight = "Normal:NoiceMini",
+          },
+        },
       },
     },
   },
