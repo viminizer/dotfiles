@@ -2,11 +2,15 @@
 return {
   {
     "neovim/nvim-lspconfig",
+    -- lspconfig's jdtls builds its --jvm-arg list from os.getenv('JDTLS_JVM_ARGS'),
+    -- reading nvim's own environment before the server is spawned. Setting this
+    -- via cmd_env is too late: that only reaches the child process.
+    init = function()
+      vim.env.JDTLS_JVM_ARGS = "-Xms256m -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=100"
+    end,
     opts = {
       servers = {
         jdtls = {
-          -- lspconfig's jdtls reads extra JVM args from this env var and keeps its own -data dir
-          cmd_env = { JDTLS_JVM_ARGS = "-Xms256m -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=100" },
           settings = {
             java = {
               autobuild = { enabled = false },
