@@ -1,4 +1,8 @@
 -- jdtls tuning for large multi-module Maven repos (e.g. shardingsphere: 435 modules)
+--
+-- jdtls runs through nvim-jdtls (LazyVim's lang.java extra), not nvim-lspconfig.
+-- Same server and same flags either way; nvim-jdtls is what makes the java-test
+-- bundle available, which is where <leader>tr / <leader>tt come from.
 
 -- Format with the project's own Eclipse profile when it ships one. Otherwise
 -- jdtls formats to Eclipse defaults, so saving rewrites lines nobody touched
@@ -70,18 +74,8 @@ end
 
 return {
   {
-    "neovim/nvim-lspconfig",
-    -- lspconfig's jdtls builds its --jvm-arg list from os.getenv('JDTLS_JVM_ARGS'),
-    -- reading nvim's own environment before the server is spawned. Setting this
-    -- via cmd_env is too late: that only reaches the child process.
+    "mfussenegger/nvim-jdtls",
     init = function()
-      -- ActiveProcessorCount caps how many cores jdtls floods at once. Opening
-      -- this repo costs ~7 CPU-minutes either way (38MB of generated ANTLR
-      -- parsers, unavoidable), but spreading it over 4 cores instead of 9 is
-      -- the difference between an audible fan and a quiet one.
-      vim.env.JDTLS_JVM_ARGS =
-        "-Xms256m -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:ActiveProcessorCount=4"
-
       -- No whole-file format-on-save for Java: jdtls and the project's spotless
       -- profile are different Eclipse formatter builds, so it rewrites lines
       -- nobody touched and buries the real change in the diff. Changed hunks are
@@ -108,44 +102,64 @@ return {
         end,
       })
     end,
-    opts = {
-      servers = {
-        jdtls = {
-          -- nvim otherwise kills the server the instant it sends shutdown, so
-          -- jdtls dies mid-write and logs failed index saves every time. This
-          -- costs the full duration on every quit: lsp.lua's
-          -- check_clients_closed polls a snapshot that never shrinks, so
-          -- vim.wait always runs to the deadline rather than exiting early.
-          -- Drop to 0 if the pause on :qa is more annoying than it is worth.
-          flags = { exit_timeout = 2000 },
-          settings = {
-            java = {
-              autobuild = { enabled = false },
-              maxConcurrentBuilds = 1,
-              import = {
-                exclusions = {
-                  "**/target/**",
-                  "**/build/**",
-                  "**/graphify-out/**",
-                  "**/node_modules/**",
-                  "**/.git/**",
-                },
-                maven = { offline = { enabled = true } },
-              },
-              maven = { downloadSources = false },
-              eclipse = { downloadSources = false },
-              references = { includeDecompiledSources = false },
-              referencesCodeLens = { enabled = false },
-              implementationsCodeLens = { enabled = false },
-              completion = { maxResults = 50 },
-              configuration = { updateBuildConfiguration = "disabled" },
-              format = { settings = eclipse_profile() },
+    opts = function(_, opts)
+      -- JDTLS_JVM_ARGS is read by nvim-lspconfig, not by the server: mason's
+      -- jdtls is a python launcher that only accepts --jvm-arg=. Now that
+      -- nvim-jdtls builds the command line, the flags have to go on it directly
+      -- or they vanish silently.
+      --
+      -- ActiveProcessorCount caps how many cores jdtls floods at once. Opening
+      -- this repo costs ~7 CPU-minutes either way (38MB of generated ANTLR
+      -- parsers, unavoidable), but spreading it over 4 cores instead of 9 is
+      -- the difference between an audible fan and a quiet one.
+      vim.list_extend(opts.cmd, {
+        "--jvm-arg=-Xms256m",
+        "--jvm-arg=-Xmx2g",
+        "--jvm-arg=-XX:+UseG1GC",
+        "--jvm-arg=-XX:MaxGCPauseMillis=100",
+        "--jvm-arg=-XX:ActiveProcessorCount=4",
+      })
+
+      -- Scanning 435 modules for main classes on every attach, to populate debug
+      -- configurations that are never used. The test runner does not need it.
+      opts.dap_main = false
+
+      -- nvim otherwise kills the server the instant it sends shutdown, so jdtls
+      -- dies mid-write and logs failed index saves every time. This costs the
+      -- full duration on every quit: lsp.lua's check_clients_closed polls a
+      -- snapshot that never shrinks, so vim.wait always runs to the deadline
+      -- rather than exiting early. Drop to 0 if the pause on :qa is not worth it.
+      opts.jdtls = vim.tbl_deep_extend("force", opts.jdtls or {}, {
+        flags = { exit_timeout = 2000 },
+      })
+
+      opts.settings = vim.tbl_deep_extend("force", opts.settings or {}, {
+        java = {
+          autobuild = { enabled = false },
+          maxConcurrentBuilds = 1,
+          import = {
+            exclusions = {
+              "**/target/**",
+              "**/build/**",
+              "**/graphify-out/**",
+              "**/node_modules/**",
+              "**/.git/**",
             },
+            maven = { offline = { enabled = true } },
           },
+          maven = { downloadSources = false },
+          eclipse = { downloadSources = false },
+          references = { includeDecompiledSources = false },
+          referencesCodeLens = { enabled = false },
+          implementationsCodeLens = { enabled = false },
+          completion = { maxResults = 50 },
+          configuration = { updateBuildConfiguration = "disabled" },
+          format = { settings = eclipse_profile() },
+          -- The extra turns these on. lsp.lua keeps inlay hints off, so
+          -- computing them is work with nothing to show for it.
+          inlayHints = { parameterNames = { enabled = "none" } },
         },
-      },
-    },
+      })
+    end,
   },
-  -- nvim-jdtls is unused: jdtls runs through nvim-lspconfig + mason-lspconfig
-  { "mfussenegger/nvim-jdtls", enabled = false },
 }

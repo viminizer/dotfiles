@@ -138,9 +138,5 @@ return {
       },
     },
   },
-  -- Java (special handling)
-  {
-    "mfussenegger/nvim-jdtls",
-    ft = { "java" },
-  },
+  -- Java is configured in plugins/java.lua, through LazyVim's lang.java extra.
 }
