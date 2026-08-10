@@ -12,6 +12,8 @@ return {
     -- markview decides for itself which buffers to attach to, so ft-based lazy
     -- loading makes it miss the buffer nvim was opened with. Author's advice.
     lazy = false,
+    -- Tables only render fully when the window is not wrapped; see the markdown
+    -- FileType autocmd in config/autocmds.lua.
     opts = {
       preview = {
         -- Default is { "n", "no", "c" }, which unrenders the whole buffer the

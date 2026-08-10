@@ -35,6 +35,19 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- LazyVim turns wrap on for markdown, and markview then skips its table pipe
+-- rendering entirely (renderers/markdown.lua:1542, "BUG, wrap breaks table
+-- rendering"), leaving tables as raw ASCII inside drawn borders. This has to
+-- live here rather than in the markview spec's init: autocmds on the same event
+-- fire in registration order, and LazyVim's lazyvim_wrap_spell registers after
+-- plugin init but before this file. <leader>uw toggles wrap back on.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.wrap = false
+  end,
+})
+
 -- Force transparent background for Lazy and Snacks windows
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "lazy", "snacks_explorer", "snacks_picker", "snacks_input", "snacks_win" },
