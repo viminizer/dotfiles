@@ -31,6 +31,17 @@ return {
         size = { width = "80%", height = "80%" },
         position = "50%",
       },
+      mappings = {
+        -- Replaces neo-tree's "order by" submenu (oc, od, og, ...). nowait so
+        -- it fires instead of waiting to see if one of those follows.
+        ["o"] = {
+          function(state)
+            vim.ui.open(state.tree:get_node().path)
+          end,
+          desc = "open with system app",
+          nowait = true,
+        },
+      },
     },
   },
 }
