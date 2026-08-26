@@ -37,9 +37,68 @@ return {
         -- typescript alone covers both.
         vtsls = {
           settings = {
+            -- Section names with a slash are vtsls's own; it resolves
+            -- "js/ts.hover.maximumLength" by splitting on dots, so "js/ts" is
+            -- a single table key.
+            ["js/ts"] = {
+              -- Hover truncates at 500 characters by default, and the types
+              -- worth putting on a projector are exactly the long ones.
+              -- implicitProjectConfig is deliberately absent: it applies to
+              -- every .js file outside a tsconfig, so util/teach.lua pushes
+              -- checkJs/strict at runtime instead of lighting up every stray
+              -- script with errors nobody asked for.
+              hover = { maximumLength = 3000 },
+            },
+            vtsls = {
+              experimental = {
+                -- The typescript extra sets 30, which elides the informative
+                -- half of any hint worth reading out.
+                maxInlayHintLength = 80,
+              },
+            },
             typescript = {
               suggest = {
                 completeFunctionCalls = false,
+                -- JSDoc scaffolding, for the lessons that type plain JS
+                -- before TypeScript shows up.
+                completeJSDocs = true,
+                jsdoc = { generateReturns = true },
+              },
+              preferences = {
+                -- Auto-imports arrive as `import type`, which is the habit
+                -- worth teaching rather than correcting later.
+                preferTypeOnlyAutoImports = true,
+                importModuleSpecifier = "shortest",
+              },
+              -- Land in real source instead of a .d.ts, so "let's look inside
+              -- the library" arrives somewhere readable.
+              preferGoToSourceDefinition = true,
+              tsserver = {
+                -- Errors in files nobody has opened yet. Without this a broken
+                -- file stays green until someone happens to open it.
+                experimental = { enableProjectDiagnostics = true },
+              },
+              -- Server-side only. Nothing renders these until teach mode turns
+              -- nvim's codelens on, and the server computes a lens only when
+              -- it is asked for one.
+              referencesCodeLens = { enabled = true, showOnAllFunctions = true },
+              implementationsCodeLens = {
+                enabled = true,
+                showOnInterfaceMethods = true,
+                showOnAllClassMethods = true,
+              },
+              inlayHints = {
+                -- The typescript extra enables everything here except
+                -- variableTypes, which is the one that draws `const total:
+                -- number`. That is the whole point when the subject is types.
+                -- suppressWhen* default to hiding a hint when it merely
+                -- repeats the name; a class needs to see it anyway.
+                variableTypes = { enabled = true, suppressWhenTypeMatchesName = false },
+                parameterNames = { enabled = "all", suppressWhenArgumentMatchesName = false },
+                parameterTypes = { enabled = true },
+                propertyDeclarationTypes = { enabled = true },
+                functionLikeReturnTypes = { enabled = true },
+                enumMemberValues = { enabled = true },
               },
             },
           },

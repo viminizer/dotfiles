@@ -46,6 +46,11 @@ local diag_float_grp = vim.api.nvim_create_augroup("DiagnosticFloat", { clear = 
 vim.api.nvim_create_autocmd("CursorHold", {
   group = diag_float_grp,
   callback = function()
+    -- Teaching means pausing to talk, and every pause fires CursorHold. The
+    -- float would spend the lesson covering the line being explained.
+    if vim.g.teach_mode then
+      return
+    end
     vim.diagnostic.open_float(nil, { focusable = false, scope = "cursor" })
   end,
 })

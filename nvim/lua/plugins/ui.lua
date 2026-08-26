@@ -15,6 +15,9 @@ return {
       win = {
         border = "rounded",
       },
+      spec = {
+        { "<leader>t", group = "teach" },
+      },
     },
   },
   -- Completion menu with borders (blink.cmp is LazyVim's engine; nvim-cmp is disabled)
@@ -76,6 +79,28 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     opts = function(_, opts)
+      -- Which beat is checked out, so neither you nor the class has to guess
+      -- where in the course the repo currently sits.
+      table.insert(opts.sections.lualine_x, 1, {
+        function()
+          return require("util.course").status()
+        end,
+        cond = function()
+          return require("util.teach").is_enabled()
+        end,
+        color = { fg = "#7dcfff" },
+      })
+      -- A standing reminder that the editor is not in its normal state, so a
+      -- teach-mode setting never gets mistaken for a real one.
+      table.insert(opts.sections.lualine_x, 1, {
+        function()
+          return "TEACH"
+        end,
+        cond = function()
+          return require("util.teach").is_enabled()
+        end,
+        color = { fg = "#f7768e", gui = "bold" },
+      })
       table.insert(opts.sections.lualine_x, 1, {
         function()
           local text = require("noice").api.status.lsp_progress.get() or ""
