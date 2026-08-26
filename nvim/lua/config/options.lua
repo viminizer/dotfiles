@@ -16,6 +16,11 @@ vim.g.root_spec = {
   end,
 }
 
+-- Run prettier only where the project asks for it. The formatting.prettier
+-- extra otherwise formats every filetype it supports, so opening a repo that
+-- has no prettier config would rewrite it to prettier defaults on save.
+vim.g.lazyvim_prettier_needs_config = true
+
 -- Only options that differ from the LazyVim/nvim defaults belong here.
 vim.opt.breakindent = true
 vim.opt.wrap = true -- LazyVim disables wrap
