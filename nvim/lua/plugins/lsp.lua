@@ -1,43 +1,22 @@
+-- Only what LazyVim does not already do.
+--
+-- Two things install servers for free, so listing them again here is noise:
+--   * every enabled entry in `servers` below is handed to mason-lspconfig's
+--     own ensure_installed, so LSP servers install themselves
+--   * the extras in lazyvim.json bring their own servers and tools -- clangd,
+--     the docker pair, jdtls, jsonls, yamlls, vtsls, taplo, prettier
+--
+-- Formatters and linters are the exception: nothing auto-installs those.
 return {
-  -- Mason: ensure language servers are installed
   {
     "mason-org/mason.nvim",
     opts = {
-      ensure_installed = {
-        -- LSP servers
-        "vtsls",
-        "eslint-lsp",
-        "clangd",
-        "rust-analyzer",
-        "jdtls",
-        "pyright",
-        "gopls",
-        "lua-language-server",
-        "html-lsp",
-        "css-lsp",
-        "tailwindcss-language-server",
-        "json-lsp",
-        "yaml-language-server",
-        "bash-language-server",
-        "dockerfile-language-server",
-        "docker-compose-language-service",
-        -- Formatters
-        "prettier",
-        "stylua",
-        "shfmt",
-        "clang-format",
-        "rustfmt",
-        "gofumpt",
-        "black",
-        "isort",
-        -- Linters
-        "eslint_d",
-        "shellcheck",
-      },
+      -- bash-language-server shells out to shellcheck when it is on PATH, and
+      -- no enabled extra installs it.
+      ensure_installed = { "shellcheck" },
     },
   },
-  -- LSP configuration
-  --
+
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -52,18 +31,13 @@ return {
         },
       },
       servers = {
-        -- JavaScript/TypeScript (disabled - using LazyVim's vtsls extra instead)
-        ts_ls = { enabled = false },
-        -- vtsls = { enabled = true }, -- Use vtsls for TypeScript
+        -- TypeScript/JavaScript. The lang.typescript extra sets everything
+        -- else; this only turns off the argument placeholders it enables.
+        -- The extra copies these settings over to javascript, so setting
+        -- typescript alone covers both.
         vtsls = {
-          enabled = true,
           settings = {
             typescript = {
-              suggest = {
-                completeFunctionCalls = false,
-              },
-            },
-            javascript = {
               suggest = {
                 completeFunctionCalls = false,
               },
@@ -71,19 +45,6 @@ return {
           },
         },
         eslint = {},
-        -- C/C++
-        clangd = {
-          cmd = {
-            "clangd",
-            "--background-index",
-            "--clang-tidy",
-            "--header-insertion=iwyu",
-            "--completion-style=detailed",
-            "--function-arg-placeholders",
-            "--fallback-style=llvm",
-          },
-        },
-        -- Rust
         rust_analyzer = {
           settings = {
             ["rust-analyzer"] = {
@@ -96,9 +57,7 @@ return {
             },
           },
         },
-        -- Python
         pyright = {},
-        -- Go
         gopls = {
           settings = {
             gopls = {
@@ -110,31 +69,12 @@ return {
             },
           },
         },
-        -- Lua
-        lua_ls = {
-          settings = {
-            Lua = {
-              workspace = {
-                checkThirdParty = false,
-              },
-              completion = {
-                callSnippet = "Replace",
-              },
-            },
-          },
-        },
         -- Web
         html = {},
         cssls = {},
         tailwindcss = {},
-        -- Data/Config
-        jsonls = {},
-        yamlls = {},
         -- Shell
         bashls = {},
-        -- Docker
-        dockerls = {},
-        docker_compose_language_service = {},
       },
     },
   },

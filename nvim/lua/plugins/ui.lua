@@ -8,14 +8,6 @@ return {
       },
     },
   },
-  -- LSP info window with borders
-  {
-    "neovim/nvim-lspconfig",
-    opts = function()
-      -- Set border for LspInfo window
-      require("lspconfig.ui.windows").default_options.border = "rounded"
-    end,
-  },
   -- Which-key with borders
   {
     "folke/which-key.nvim",
