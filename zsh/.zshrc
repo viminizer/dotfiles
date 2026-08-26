@@ -4,7 +4,7 @@
 # =========================================================
 #
 # DEPENDENCIES (install on new machine):
-#   brew install zsh-autosuggestions fzf zoxide powerlevel10k glow bat git-delta gum eza
+#   brew install zsh-autosuggestions fzf fd zoxide powerlevel10k glow bat git-delta gum eza lazygit
 #
 # =========================================================
 
@@ -118,3 +118,11 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Android SDK
 export ANDROID_HOME="$HOME/Library/Android/sdk"
 export PATH="$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator"
+
+# -------------------------
+# lazygit
+# -------------------------
+# In a repo: normal lazygit. Not in a repo: pick one from the subfolders.
+# Same script the tmux <prefix>g popup uses.
+lazygit() { ~/.config/lazygit/lazygit.sh "$@"; }
+alias lg='lazygit'

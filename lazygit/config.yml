@@ -1,0 +1,4 @@
+# Never offer to `git init` when the folder isn't a repo, just exit.
+# The `lazygit` wrapper in ~/.config/zsh/.zshrc catches that case and
+# lets you pick a repo from the subfolders instead.
+notARepository: quit

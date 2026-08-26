@@ -1,4 +1,4 @@
-# Tracked: aerospace, borders, karabiner, kitty, nvim, sketchybar, tmux, zsh
+# Tracked: aerospace, borders, karabiner, kitty, lazygit, nvim, sketchybar, tmux, zsh
 # Everything else in ~/.config is ignored.
 
 # --- Credentials / tool state: never commit ---
