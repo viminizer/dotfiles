@@ -57,7 +57,10 @@ return {
             },
           },
         },
+        -- pyright does not format, so without ruff a .py file saves unchanged.
+        -- ruff covers formatting, linting and organize-imports in one server.
         pyright = {},
+        ruff = {},
         gopls = {
           settings = {
             gopls = {
@@ -75,6 +78,14 @@ return {
         tailwindcss = {},
         -- Shell
         bashls = {},
+      },
+      setup = {
+        -- Both ruff and pyright answer hover. pyright's is the useful one.
+        ruff = function()
+          Snacks.util.lsp.on({ name = "ruff" }, function(_, client)
+            client.server_capabilities.hoverProvider = false
+          end)
+        end,
       },
     },
   },
