@@ -1,7 +1,20 @@
 -- Options are automatically loaded before lazy.nvim startup
 
--- Root detection patterns (used by file picker)
-vim.g.root_spec = { "lsp", { ".git", "lua", "package.json", "Cargo.toml", "go.mod", "pom.xml" }, "cwd" }
+-- Root detection, used by every picker, the explorer and the root-dir terminal.
+-- Always the folder nvim was launched in - never a parent, never $HOME.
+--
+-- LazyVim's default spec walks *upward* from the current file for markers like
+-- .git or lua, so opening a file in a non-git project (or the dashboard, which
+-- has no file at all) would land on some ancestor and search far too much. The
+-- ~/lua symlink made that ancestor $HOME. Reading the cwd once, here, pins it:
+-- this file runs before lazy.nvim starts, so it is the launch directory, and a
+-- later :cd or a buffer from another project can't move it.
+local launch_dir = vim.fn.getcwd()
+vim.g.root_spec = {
+  function()
+    return launch_dir
+  end,
+}
 
 -- Only options that differ from the LazyVim/nvim defaults belong here.
 vim.opt.breakindent = true
