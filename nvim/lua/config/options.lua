@@ -30,9 +30,11 @@ vim.opt.updatetime = 500 -- CursorHold delay; below ~500 the CursorHold autocmds
 -- Diagnostic display lives in plugins/lsp.lua under nvim-lspconfig's `diagnostics` opts.
 -- Setting it here does nothing: LazyVim replaces the whole config when lspconfig loads.
 
--- Every logged LSP message is a synchronous write; this file had grown to 326MB.
--- Set to "debug" temporarily when you actually need to debug a language server.
-vim.lsp.set_log_level("off")
+-- Every logged LSP message is a synchronous write; at "info" this file had
+-- grown to 326MB. "error" keeps the crash records -- which is what you need
+-- when a server dies -- without the per-message firehose that caused that.
+-- Set to "debug" temporarily when you actually need to trace a language server.
+vim.lsp.set_log_level("error")
 
 -- Automatically open floating diagnostics on cursor hold
 local diag_float_grp = vim.api.nvim_create_augroup("DiagnosticFloat", { clear = true })
