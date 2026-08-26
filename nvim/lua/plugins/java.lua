@@ -4,6 +4,11 @@
 -- Same server and same flags either way; nvim-jdtls is what makes the java-test
 -- bundle available, which is where <leader>tr / <leader>tt come from.
 
+-- Resolved once, from the launch directory, because opts() runs when nvim-jdtls
+-- loads rather than per buffer. Opening java from a second repo in the same
+-- session keeps the first one's profile. Fine in practice -- config/options.lua
+-- pins the root to the launch directory, so cwd does not move under it.
+--
 -- Format with the project's own Eclipse profile when it ships one. Otherwise
 -- jdtls formats to Eclipse defaults, so saving rewrites lines nobody touched
 -- and the real change disappears into the diff. Apache projects using spotless
@@ -98,6 +103,13 @@ return {
         pattern = "*.java",
         group = vim.api.nvim_create_augroup("JavaFormatChangedHunks", { clear = true }),
         callback = function(args)
+          -- Checks vim.g directly, not LazyVim.format.enabled(): the FileType
+          -- autocmd above sets vim.b.autoformat = false for every java buffer,
+          -- and enabled() returns the buffer value whenever one is set, so it
+          -- would be false here always. This is the <leader>uf toggle.
+          if vim.g.autoformat == false then
+            return
+          end
           format_changed_hunks(args.buf)
         end,
       })
