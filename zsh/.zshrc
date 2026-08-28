@@ -105,11 +105,34 @@ export EDITOR="nvim"
 export VISUAL="nvim"
 export LANG="en_US.UTF-8"
 
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+if [[ -n "${XDG_CONFIG_HOME-}" ]]; then
+  export NVM_DIR="$XDG_CONFIG_HOME/nvm"
+else
+  export NVM_DIR="$HOME/.nvm"
+fi
+
+# Sourcing nvm.sh costs about 0.7s, which was most of the time this file took to
+# run. Put the default version straight on PATH and defer nvm itself until it is
+# actually called, so node is available immediately and the shell opens fast.
+nvm_default=""
+[[ -r "$NVM_DIR/alias/default" ]] && nvm_default="$(<"$NVM_DIR/alias/default")"
+
+if [[ -n "$nvm_default" && -d "$NVM_DIR/versions/node/$nvm_default/bin" ]]; then
+  path=("$NVM_DIR/versions/node/$nvm_default/bin" $path)
+  nvm() {
+    unfunction nvm
+    source "$NVM_DIR/nvm.sh"
+    nvm "$@"
+  }
+elif [[ -s "$NVM_DIR/nvm.sh" ]]; then
+  # The default is an alias we cannot resolve without nvm (say "lts/*"), so take
+  # the slow path rather than leave node off PATH entirely.
+  source "$NVM_DIR/nvm.sh"
+fi
+unset nvm_default
 
 # bun completions
-[ -s "/Users/mac/.bun/_bun" ] && source "/Users/mac/.bun/_bun"
+[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
