@@ -51,6 +51,15 @@ SYNTAX_FLOOR = 8.0
 # the derived one is wrong for a particular theme.
 BORDER_SLOT = None
 
+# Target perceptual luma for the background, or None to leave it as shipped.
+#
+# This turned out to be the variable that actually decides whether a theme reads
+# as crisp here, more than any contrast ratio. Purple-Custom sits at 2.5 and
+# always looked right; the themes that read as foggy were at 15 to 52, and
+# raising their foregrounds never fixed it because the background was the thing
+# that mattered. Hue and saturation are held, so a theme keeps its tint.
+BG_LUMA = None
+
 # Minimum contrast for dimmed text against the surface it sits on: inactive tmux
 # window tabs, inactive kitty tabs, the swap icon in the bar.
 #
@@ -239,7 +248,14 @@ def pick_focus(c, accent):
 
 def roles_from(c):
     """Map a kitty palette onto the roles the configs actually use."""
-    bg, fg = solve_contrast(c["background"], lift(c["foreground"]))
+    bg = c["background"]
+    if BG_LUMA is not None:
+        h, l, sat = colorsys.rgb_to_hls(*[x / 255 for x in rgb(bg)])
+        while l > 0.002 and luma(bg) > BG_LUMA:
+            l -= 0.001
+            r_, g_, b_ = colorsys.hls_to_rgb(h, l, sat)
+            bg = "".join(f"{round(x * 255):02x}" for x in (r_, g_, b_))
+    bg, fg = solve_contrast(bg, lift(c["foreground"]))
     # The accent is a fill with dark text on it, so it must not be lifted:
     # brightening it just washes it toward white. Only text and icons get lift.
     accent = raw_accent = pick_accent(c)
