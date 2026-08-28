@@ -356,7 +356,10 @@ export MAGENTA=0xff{r['accent_soft']}"""
             new_value = lift(value.lower())
         elif key in ("selection_background", "selection_foreground"):
             return line
-        elif re.fullmatch(r"color(?:[1-689]|1[0-4])", key):
+        elif re.fullmatch(r"color(?:[1-69]|1[0-4])", key):
+            # color8 is deliberately excluded. It is the dim slot, comments and
+            # de-emphasised text, and forcing it to the syntax floor turned
+            # #444444 into #a9a9a9: comments as loud as code.
             # Every syntax colour is raised to the floor against the solved
             # background. This is the change that actually clears the haze in
             # code, since the plain foreground is a small share of what is on
