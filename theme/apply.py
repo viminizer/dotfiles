@@ -350,8 +350,13 @@ export MAGENTA=0xff{r['accent_soft']}"""
         pad, key, gap, value, tail = m.groups()
         if key == "background":
             new_value = r["bg"]          # solved for the contrast floor
-        elif key in ("foreground", "color7", "color15"):
+        elif key == "foreground":
             new_value = r["fg"]
+        elif key in ("color7", "color15"):
+            # Held to the floor rather than overwritten with the foreground.
+            # Argonaut ships these as pure #ffffff while its foreground is a
+            # warm #fffaf3, so forcing them equal was dimming white text.
+            new_value = raise_to(value.lower(), r["bg"], CONTRAST_FLOOR)
         elif key == "cursor":
             new_value = lift(value.lower())
         elif key in ("selection_background", "selection_foreground"):
