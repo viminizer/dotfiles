@@ -1,27 +1,34 @@
 #!/bin/sh
 
-# Argonaut colors
+# Palette, rewritten by theme/apply.py
 FG="0xfffffaf3"
 RED="0xffff000f"
 
-# macOS 26 removed the `airport` utility, and `networksetup -getairportnetwork`
-# now answers "You are not associated with an AirPort network" even while the
-# machine is online, so neither of the usual approaches works here.
-# `ipconfig getsummary` still reports the association, so read the SSID there.
+# This deliberately does not show the network name. macOS treats the SSID as
+# location data, so `ipconfig getsummary` returns the literal string
+# "<redacted>" to any process without Location Services authorization, and
+# sketchybar cannot be granted it: the Location Services list only offers apps
+# that request the permission themselves. macOS 26 also removed the `airport`
+# utility and broke `networksetup -getairportnetwork`, which now reports
+# "not associated" while online. The local IP is unrestricted and says the same
+# thing that matters, which is whether the machine is actually on a network.
 IFACE="${WIFI_IFACE:-en0}"
-SUMMARY="$(ipconfig getsummary "$IFACE" 2>/dev/null)"
 
-# The key is padded and colon-separated: "  SSID : <name>". Take the first hit
-# only; the summary repeats it once per configured network profile.
-SSID="$(echo "$SUMMARY" | awk -F' SSID : ' '/ SSID : / { print $2; exit }')"
+case "$(ifconfig "$IFACE" 2>/dev/null)" in
+  *"status: active"*) ;;
+  *) sketchybar --set "$NAME" icon="󰖪" icon.color="$RED" \
+       label="off" label.color="$RED"
+     exit 0 ;;
+esac
 
-# Long network names would push the whole status group off the bar.
-if [ "${#SSID}" -gt 14 ]; then
-  SSID="$(echo "$SSID" | cut -c1-13)…"
+IP="$(ipconfig getifaddr "$IFACE" 2>/dev/null)"
+
+# Associated but no address yet: DHCP is still going, or the link is captive.
+if [ -z "$IP" ]; then
+  sketchybar --set "$NAME" icon="󰖩" icon.color="$RED" \
+    label="no ip" label.color="$RED"
+  exit 0
 fi
 
-if [ -n "$SSID" ]; then
-  sketchybar --set "$NAME" icon="󰖩" icon.color="$FG" label="$SSID" label.color="$FG"
-else
-  sketchybar --set "$NAME" icon="󰖪" icon.color="$RED" label="off" label.color="$RED"
-fi
+sketchybar --set "$NAME" icon="󰖩" icon.color="$FG" \
+  label="$IP" label.color="$FG"
