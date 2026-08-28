@@ -52,10 +52,14 @@ SYNTAX_FLOOR = 8.0
 BORDER_SLOT = None
 
 # Minimum contrast for dimmed text against the surface it sits on: inactive tmux
-# window tabs, inactive kitty tabs, the swap icon in the bar. Some themes put
-# color8 almost on top of color0 and the result is unreadable rather than merely
-# quiet. Argonaut is #444444 on #222222, which is 1.63:1.
-MUTED_FLOOR = 5.0
+# window tabs, inactive kitty tabs, the swap icon in the bar.
+#
+# Off, because raising it costs more than it buys. At 5.0 the dimmed text stops
+# being dim: it lands close enough to the plain text that the two stop
+# separating, and the screen fills with mid-grey, which reads as fog. Dimness is
+# doing real work here even when the raw ratio looks alarming. Try 3.0 for a
+# middle ground rather than going back to 5.0.
+MUTED_FLOOR = 0.0
 # How light the text may be pushed while solving for it. The text is moved
 # first, since it has more headroom than the background has room to darken.
 FG_CEILING = 0.93
