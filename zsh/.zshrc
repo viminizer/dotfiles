@@ -126,3 +126,9 @@ export PATH="$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator"
 # Same script the tmux <prefix>g popup uses.
 lazygit() { ~/.config/lazygit/lazygit.sh "$@"; }
 alias lg='lazygit'
+
+# -------------------------
+# Codex CLI
+# -------------------------
+# Codex with no approval prompts and no sandbox (mirrors `danger` for Claude).
+alias dangerx='codex --dangerously-bypass-approvals-and-sandbox'
