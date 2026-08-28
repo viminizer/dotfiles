@@ -27,7 +27,7 @@ import zipfile
 # samples a wide radius, so bright patches in the wallpaper smear across the
 # whole window, and that smear was the fog, not the leakage itself.
 OPACITY = 0.90
-LIFT = 0.07
+LIFT = 0.13
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STATE = ROOT / "theme" / "current.json"
@@ -104,16 +104,43 @@ def lift(hex6):
     the tint we are trying to spend the leakage budget on.
     """
     h, l, s = colorsys.rgb_to_hls(*[c / 255 for c in rgb(hex6)])
-    r, g, b = colorsys.hls_to_rgb(h, min(0.92, l + LIFT), s)
+    r, g, b = colorsys.hls_to_rgb(h, min(0.94, l + LIFT), s)
     return "".join(f"{round(x * 255):02x}" for x in (r, g, b))
+
+
+def pick_accent(c):
+    """Choose the colour that gives a theme its character.
+
+    Any fixed ANSI slot is the same hue in every theme by definition: color5 is
+    magenta everywhere, which is why every theme came out purple no matter which
+    one was applied. Pick the most saturated of color1..color6 instead, skewed
+    away from near-white and near-black so it works as a fill. That lands on
+    blue for Catppuccin, gold for rose-pine, orange for Gruvbox and coral for
+    everforest, which is what those themes actually look like.
+    """
+    best, score = c["color5"], -1.0
+    for i in range(1, 7):
+        v = c.get(f"color{i}")
+        if not v:
+            continue
+        _, l, sat = colorsys.rgb_to_hls(*[x / 255 for x in rgb(v)])
+        weighted = sat * (1 - abs(l - 0.62))
+        if weighted > score:
+            best, score = v, weighted
+    return best
 
 
 def roles_from(c):
     """Map a kitty palette onto the roles the configs actually use."""
     bg = c["background"]
     fg = lift(c["foreground"])
-    accent = lift(c["color5"])
-    yellow = lift(c["color3"])
+    # The accent is a fill with dark text on it, so it must not be lifted:
+    # brightening it just washes it toward white. Only text and icons get lift.
+    accent = raw_accent = pick_accent(c)
+    # The warm accent carries the bar outline and window borders. If the theme's
+    # signature colour is already that yellow, step across to the cool slot so
+    # the two are still telling you different things.
+    yellow = c["color4"] if raw_accent == c["color3"] else c["color3"]
 
     # color0 is usually a raised surface, but some themes (kanagawa) make it
     # darker than the background, which would make every pill disappear.
@@ -139,10 +166,10 @@ def roles_from(c):
         # the clock. Every theme ships one as color3, so take it directly.
         "gold": yellow,
         "gold_dim": relight(yellow, 0.18, 1.1),
-        "yellow": yellow,
+        "yellow": lift(yellow),
         "green": lift(c["color2"]),
         "red": lift(c["color1"]),
-        "pink": c.get("color13", accent),
+        "pink": accent,
     }
 
 
