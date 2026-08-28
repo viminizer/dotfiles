@@ -100,14 +100,14 @@ def read_theme(name):
     return raw, colors
 
 
-def lift(hex6):
+def lift(hex6, amount=None):
     """Brighten a colour to pay for what the desktop leakage costs in contrast.
 
     Only foreground-ish colours get this. Lifting the background too would keep
     the tint we are trying to spend the leakage budget on.
     """
     h, l, s = colorsys.rgb_to_hls(*[c / 255 for c in rgb(hex6)])
-    r, g, b = colorsys.hls_to_rgb(h, min(TEXT_CAP, l + LIFT), s)
+    r, g, b = colorsys.hls_to_rgb(h, min(TEXT_CAP, l + (LIFT if amount is None else amount)), s)
     return "".join(f"{round(x * 255):02x}" for x in (r, g, b))
 
 
@@ -226,9 +226,32 @@ export MAGENTA=0xff{r['accent_soft']}"""
         sys.exit("could not find the palette block in sketchybarrc")
     rc_path.write_text(rc)
 
-    # kitty gets the upstream theme file verbatim.
+    # kitty's own text colours have to be lifted too, not just the ones the bars
+    # use. The theme file used to be written through untouched, so `foreground`
+    # stayed at its shipped value and every bit of terminal text ignored LIFT
+    # entirely: the brightening was real but invisible where it mattered most.
+    #
+    # background and the selection colours are left alone. Lifting background
+    # would undo the leakage work, and a lifted selection stops contrasting with
+    # the text sitting on it. Syntax colours get a gentler lift than plain text,
+    # since they carry meaning through hue and wash out faster.
+    def repaint_theme(line):
+        m = re.match(r"^(\s*)(\w+)(\s+)#([0-9a-fA-F]{6})(\s*)$", line)
+        if not m:
+            return line
+        pad, key, gap, value, tail = m.groups()
+        if key in ("background", "selection_background", "selection_foreground"):
+            return line
+        if key in ("foreground", "color7", "color15", "cursor"):
+            new_value = lift(value.lower())
+        elif re.fullmatch(r"color(?:[1-689]|1[0-4])", key):
+            new_value = lift(value.lower(), LIFT * 0.55)
+        else:
+            return line
+        return f"{pad}{key}{gap}#{new_value}{tail}"
+
     theme_file = ROOT / "kitty" / "themes" / f"{name}.conf"
-    theme_file.write_text(theme_raw)
+    theme_file.write_text("\n".join(repaint_theme(l) for l in theme_raw.splitlines()) + "\n")
     kitty_conf = ROOT / "kitty" / "kitty.conf"
     kc = kitty_conf.read_text()
     kc = re.sub(r"^include \./themes/.*$", f"include ./themes/{name}.conf",
