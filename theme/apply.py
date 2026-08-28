@@ -200,6 +200,20 @@ export MAGENTA=0xff{r['accent_soft']}"""
     blur = 10 if opacity < 0.95 else 0
     kc = re.sub(r"^background_opacity .*$", f"background_opacity {opacity}", kc, flags=re.M)
     kc = re.sub(r"^background_blur .*$", f"background_blur {blur}", kc, flags=re.M)
+
+    # The tab bar is set here rather than left to the theme file, for two
+    # reasons: the themes mostly paint the active tab the same colour as the
+    # background, which gives it nothing to stand out against, and these four
+    # lines sit after the include so they win anyway. Mirroring sketchybar's
+    # front_app keeps the two bars saying the same thing.
+    tabs = {
+        "active_tab_foreground": r["bg"],
+        "active_tab_background": r["accent"],
+        "inactive_tab_foreground": r["muted"],
+        "inactive_tab_background": r["surface"],
+    }
+    for key, value in tabs.items():
+        kc = re.sub(rf"^{key}\s+\S+$", f"{key:<23} #{value}", kc, flags=re.M)
     print(f"  background_opacity {opacity} (bg luma {l:.1f}), blur {blur}")
     kitty_conf.write_text(kc)
     print(f"  repainted kitty/kitty.conf -> themes/{name}.conf")
