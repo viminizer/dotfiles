@@ -27,7 +27,10 @@ import zipfile
 # samples a wide radius, so bright patches in the wallpaper smear across the
 # whole window, and that smear was the fog, not the leakage itself.
 OPACITY = 0.90
-LIFT = 0.13
+LIFT = 0.20
+# Ceiling on how light text may get. Past about 0.96 every theme's text lands
+# on the same near-white and you can no longer tell them apart.
+TEXT_CAP = 0.96
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STATE = ROOT / "theme" / "current.json"
@@ -104,7 +107,7 @@ def lift(hex6):
     the tint we are trying to spend the leakage budget on.
     """
     h, l, s = colorsys.rgb_to_hls(*[c / 255 for c in rgb(hex6)])
-    r, g, b = colorsys.hls_to_rgb(h, min(0.94, l + LIFT), s)
+    r, g, b = colorsys.hls_to_rgb(h, min(TEXT_CAP, l + LIFT), s)
     return "".join(f"{round(x * 255):02x}" for x in (r, g, b))
 
 
