@@ -31,9 +31,9 @@ if [ -n "$pr_data" ]; then
   is_draft=${pr_data#* }
 
   if [ "$is_draft" = "true" ]; then
-    printf '#[fg=#fbbf24]│ PR #%s (draft) ' "$pr_number" > "$cache_file"
+    printf '#[fg=#facc15]│ PR #%s (draft) ' "$pr_number" > "$cache_file"
   else
-    printf '#[fg=#4ade80]│ PR #%s ' "$pr_number" > "$cache_file"
+    printf '#[fg=#22c55e]│ PR #%s ' "$pr_number" > "$cache_file"
   fi
 else
   : > "$cache_file"

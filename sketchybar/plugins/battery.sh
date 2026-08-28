@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# Tokyo Night colors
-GREEN="0xff9ece6a"
-YELLOW="0xffe0af68"
-RED="0xfff7768e"
-FG="0xffc0caf5"
+# Purple Custom colors
+GREEN="0xff22c55e"
+YELLOW="0xfffacc15"
+RED="0xfff87171"
+FG="0xffe2e0e7"
 
 # One pmset call, not two. `[0-9]` rather than `\d`, which is a PCRE escape that
 # only happens to work because macOS grep is lenient about it.

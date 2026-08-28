@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# Tokyo Night colors
-FG_MUTED="0xff565f89"
-YELLOW="0xffe0af68"
-RED="0xfff7768e"
+# Purple Custom colors
+FG_MUTED="0xff736d7c"
+YELLOW="0xfffacc15"
+RED="0xfff87171"
 
 # `sysctl vm.swapusage` prints:
 #   vm.swapusage: total = 7168.00M  used = 6148.25M  free = 1019.75M

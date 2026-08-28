@@ -2,19 +2,23 @@
 
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
-# ===== Tokyo Night Color Palette =====
-export BAR_COLOR=0xf01a1b26
-export ITEM_BG_COLOR=0xff292e42
-export ITEM_BG_FOCUSED=0xff3d59a1
-export ACCENT_COLOR=0xff7aa2f7
-export FG_COLOR=0xffc0caf5
-export FG_MUTED=0xff565f89
-export GREEN=0xff9ece6a
-export RED=0xfff7768e
-export YELLOW=0xffe0af68
-export CYAN=0xff7dcfff
-export MAGENTA=0xffbb9af7
-export ORANGE=0xffff9e64
+# ===== Purple Custom Palette =====
+# Every value here already exists somewhere else in this setup: the first six
+# come from the kitty theme (kitty/themes/Purple-Custom.conf and the tab bar
+# colours in kitty.conf), GOLD is the active window border from bordersrc. The
+# bar used to be Tokyo Night, which shared no colour with the terminal under it.
+export BAR_COLOR=0xf0050014       # kitty background
+export ITEM_BG_COLOR=0xff2e1065   # kitty inactive tab background
+export ITEM_BG_FOCUSED=0xff7c3aed
+export ACCENT_COLOR=0xffa78bfa    # kitty active tab background
+export FG_COLOR=0xffe2e0e7
+export FG_MUTED=0xff736d7c        # kitty inactive tab foreground
+export DARK=0xff050014            # text on top of an accent fill
+export GOLD=0xffc9971a            # bordersrc active window border
+export GREEN=0xff22c55e
+export RED=0xfff87171
+export YELLOW=0xfffacc15
+export MAGENTA=0xffc084fc
 
 ##### Bar Appearance #####
 sketchybar --bar \
@@ -27,7 +31,7 @@ sketchybar --bar \
   y_offset=4 \
   padding_left=2 \
   padding_right=2 \
-  border_color=$ORANGE \
+  border_color=$GOLD \
   border_width=1
 
 ##### Changing Defaults #####
@@ -76,7 +80,7 @@ for sid in $workspaces; do
     background.color=$ITEM_BG_COLOR \
     background.corner_radius=4 \
     background.drawing=on \
-    background.height=22 \
+    background.height=20 \
     icon="$sid" \
     icon.font="SF Pro:Bold:11.0" \
     icon.color=$FG_COLOR \
@@ -108,14 +112,14 @@ sketchybar --add item space_separator left \
 sketchybar --add item front_app left \
   --set front_app \
   background.drawing=on \
-  background.color=$ORANGE \
+  background.color=$ACCENT_COLOR \
   background.height=20 \
   icon.font="sketchybar-app-font:Regular:12.0" \
-  icon.color=0xff1a1b26 \
+  icon.color=$DARK \
   icon.padding_left=8 \
   icon.padding_right=2 \
   label.font="SF Pro:Bold:11.0" \
-  label.color=0xff1a1b26 \
+  label.color=$DARK \
   label.padding_left=2 \
   label.padding_right=8 \
   script="$PLUGIN_DIR/front_app.sh" \
@@ -131,7 +135,7 @@ sketchybar --add item aerospace_mode left \
   background.color=$RED \
   background.height=20 \
   label.font="SF Pro:Bold:11.0" \
-  label.color=0xff1a1b26 \
+  label.color=$DARK \
   label.padding_left=8 \
   label.padding_right=8 \
   script="$PLUGIN_DIR/aerospace_mode.sh" \
@@ -143,9 +147,9 @@ sketchybar --add item aerospace_mode left \
 sketchybar --add item clock right \
   --set clock \
   background.drawing=on \
-  background.height=18 \
+  background.height=20 \
   icon=󰃰 \
-  icon.color=$CYAN \
+  icon.color=$GOLD \
   icon.font="Hack Nerd Font:Bold:14.0" \
   update_freq=10 \
   click_script="open -a Calendar" \
@@ -155,7 +159,7 @@ sketchybar --add item clock right \
 sketchybar --add item volume right \
   --set volume \
   background.drawing=on \
-  background.height=18 \
+  background.height=20 \
   icon.color=$MAGENTA \
   icon.font="Hack Nerd Font:Bold:14.0" \
   click_script="open 'x-apple.systempreferences:com.apple.Sound-Settings.extension'" \
@@ -166,7 +170,7 @@ sketchybar --add item volume right \
 sketchybar --add item battery right \
   --set battery \
   background.drawing=on \
-  background.height=18 \
+  background.height=20 \
   icon.color=$GREEN \
   icon.font="Hack Nerd Font:Bold:14.0" \
   update_freq=120 \
@@ -178,7 +182,7 @@ sketchybar --add item battery right \
 sketchybar --add item cpu right \
   --set cpu \
   background.drawing=on \
-  background.height=18 \
+  background.height=20 \
   icon=󰻠 \
   icon.color=$YELLOW \
   icon.font="Hack Nerd Font:Bold:14.0" \
@@ -191,7 +195,7 @@ sketchybar --add item cpu right \
 sketchybar --add item memswap right \
   --set memswap \
   background.drawing=on \
-  background.height=18 \
+  background.height=20 \
   icon="󰓡" \
   icon.color=$FG_MUTED \
   icon.font="Hack Nerd Font:Bold:14.0" \

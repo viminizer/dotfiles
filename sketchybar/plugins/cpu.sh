@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# Tokyo Night colors
-YELLOW="0xffe0af68"
-ORANGE="0xffff9e64"
-RED="0xfff7768e"
-FG="0xffc0caf5"
+# Purple Custom colors
+YELLOW="0xfffacc15"
+GOLD="0xffc9971a"
+RED="0xfff87171"
+FG="0xffe2e0e7"
 
 # This used to sum `ps -A -o %cpu`, but that column is each process's average
 # over its whole lifetime, not what it is doing now. Summing it reported 92% on
@@ -30,8 +30,8 @@ if [ "$CPU" -ge 80 ]; then
   ICON_COLOR="$RED"
   LABEL_COLOR="$RED"
 elif [ "$CPU" -ge 50 ]; then
-  ICON_COLOR="$ORANGE"
-  LABEL_COLOR="$ORANGE"
+  ICON_COLOR="$GOLD"
+  LABEL_COLOR="$GOLD"
 else
   ICON_COLOR="$YELLOW"
   LABEL_COLOR="$FG"
