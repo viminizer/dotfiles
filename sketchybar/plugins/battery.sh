@@ -1,11 +1,24 @@
 #!/bin/sh
 
-PERCENTAGE="$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)"
-CHARGING="$(pmset -g batt | grep 'AC Power')"
+# Tokyo Night colors
+GREEN="0xff9ece6a"
+YELLOW="0xffe0af68"
+RED="0xfff7768e"
+FG="0xffc0caf5"
+
+# One pmset call, not two. `[0-9]` rather than `\d`, which is a PCRE escape that
+# only happens to work because macOS grep is lenient about it.
+BATT="$(pmset -g batt)"
+PERCENTAGE="$(echo "$BATT" | grep -Eo "[0-9]+%" | head -1 | cut -d% -f1)"
 
 if [ "$PERCENTAGE" = "" ]; then
   exit 0
 fi
+
+case "$BATT" in
+  *"AC Power"*) CHARGING=1 ;;
+  *) CHARGING=0 ;;
+esac
 
 case "${PERCENTAGE}" in
   9[0-9]|100) ICON=""
@@ -19,10 +32,24 @@ case "${PERCENTAGE}" in
   *) ICON=""
 esac
 
-if [[ "$CHARGING" != "" ]]; then
+if [ "$CHARGING" = 1 ]; then
   ICON=""
+  ICON_COLOR="$GREEN"
+  LABEL_COLOR="$FG"
+elif [ "$PERCENTAGE" -le 20 ]; then
+  # The icon was hardcoded green, so a nearly flat battery looked healthy.
+  ICON_COLOR="$RED"
+  LABEL_COLOR="$RED"
+elif [ "$PERCENTAGE" -le 40 ]; then
+  ICON_COLOR="$YELLOW"
+  LABEL_COLOR="$FG"
+else
+  ICON_COLOR="$GREEN"
+  LABEL_COLOR="$FG"
 fi
 
-# The item invoking this script (name $NAME) will get its icon and label
-# updated with the current battery status
-sketchybar --set "$NAME" icon="$ICON" label="${PERCENTAGE}%"
+sketchybar --set "$NAME" \
+  icon="$ICON" \
+  icon.color="$ICON_COLOR" \
+  label="${PERCENTAGE}%" \
+  label.color="$LABEL_COLOR"

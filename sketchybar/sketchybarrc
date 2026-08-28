@@ -51,6 +51,7 @@ sketchybar --default "${default[@]}"
 
 ##### Aerospace Workspaces #####
 sketchybar --add event aerospace_workspace_change
+sketchybar --add event aerospace_mode_change
 
 # Launchd can start us before AeroSpace has finished coming up, and without it
 # there are no workspaces to build items from. Give it a few seconds.
@@ -58,6 +59,15 @@ for _ in $(seq 1 20); do
   workspaces=$(aerospace list-workspaces --all 2>/dev/null) && [ -n "$workspaces" ] && break
   sleep 0.5
 done
+
+# `list-workspaces` sorts "0" first, but it is the tenth workspace and alt-0 is
+# the last key in the row, so move it to the end to match the keyboard.
+ordered=""
+zero=""
+for sid in $workspaces; do
+  if [ "$sid" = "0" ]; then zero="$sid"; else ordered="$ordered $sid"; fi
+done
+workspaces="$ordered $zero"
 
 for sid in $workspaces; do
   sketchybar --add item space.$sid left \
@@ -111,6 +121,22 @@ sketchybar --add item front_app left \
   script="$PLUGIN_DIR/front_app.sh" \
   --subscribe front_app front_app_switched
 
+# Which AeroSpace mode is active. Hidden in main mode, so it costs no space
+# until alt-r or alt-shift-; changes what your keys do.
+sketchybar --add item aerospace_mode left \
+  --set aerospace_mode \
+  drawing=off \
+  icon.drawing=off \
+  background.drawing=on \
+  background.color=$RED \
+  background.height=20 \
+  label.font="SF Pro:Bold:11.0" \
+  label.color=0xff1a1b26 \
+  label.padding_left=8 \
+  label.padding_right=8 \
+  script="$PLUGIN_DIR/aerospace_mode.sh" \
+  --subscribe aerospace_mode aerospace_mode_change
+
 ##### Right Items #####
 
 # Clock
@@ -122,6 +148,7 @@ sketchybar --add item clock right \
   icon.color=$CYAN \
   icon.font="Hack Nerd Font:Bold:14.0" \
   update_freq=10 \
+  click_script="open -a Calendar" \
   script="$PLUGIN_DIR/clock.sh"
 
 # Volume
@@ -131,6 +158,7 @@ sketchybar --add item volume right \
   background.height=18 \
   icon.color=$MAGENTA \
   icon.font="Hack Nerd Font:Bold:14.0" \
+  click_script="open 'x-apple.systempreferences:com.apple.Sound-Settings.extension'" \
   script="$PLUGIN_DIR/volume.sh" \
   --subscribe volume volume_change
 
@@ -142,6 +170,7 @@ sketchybar --add item battery right \
   icon.color=$GREEN \
   icon.font="Hack Nerd Font:Bold:14.0" \
   update_freq=120 \
+  click_script="open 'x-apple.systempreferences:com.apple.Battery-Settings.extension'" \
   script="$PLUGIN_DIR/battery.sh" \
   --subscribe battery system_woke power_source_change
 
@@ -153,8 +182,22 @@ sketchybar --add item cpu right \
   icon=󰻠 \
   icon.color=$YELLOW \
   icon.font="Hack Nerd Font:Bold:14.0" \
-  update_freq=3 \
+  update_freq=5 \
+  click_script="open -a 'Activity Monitor'" \
   script="$PLUGIN_DIR/cpu.sh"
+
+# Swap in use. memswap.sh has been sitting in plugins/ unreferenced; it turns
+# red on its own once macOS starts swapping, which is worth seeing.
+sketchybar --add item memswap right \
+  --set memswap \
+  background.drawing=on \
+  background.height=18 \
+  icon="󰓡" \
+  icon.color=$FG_MUTED \
+  icon.font="Hack Nerd Font:Bold:14.0" \
+  update_freq=30 \
+  click_script="open -a 'Activity Monitor'" \
+  script="$PLUGIN_DIR/memswap.sh"
 
 ##### Force all scripts to run the first time #####
 sketchybar --update

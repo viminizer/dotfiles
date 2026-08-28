@@ -125,7 +125,7 @@ alt-ctrl-shift-j = 'move-node-to-monitor down'
 alt-ctrl-shift-k = 'move-node-to-monitor up'
 
 # Resize mode
-alt-r = 'mode resize'
+alt-r = ['mode resize', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=resize']
 
 # Workspaces (main monitor: 1-5)
 alt-1 = 'workspace 1'
@@ -165,7 +165,7 @@ alt-rightSquareBracket = 'workspace next'
 alt-q = 'close'
 
 # Service mode
-alt-shift-semicolon = 'mode service'
+alt-shift-semicolon = ['mode service', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=service']
 
 # ===== Resize Mode =====
 [mode.resize.binding]
@@ -175,17 +175,17 @@ j = 'resize height +50'
 k = 'resize height -50'
 minus = 'resize smart -50'
 equal = 'resize smart +50'
-enter = 'mode main'
-esc = 'mode main'
+enter = ['mode main', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main']
+esc = ['mode main', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main']
 
 # ===== Service Mode =====
 [mode.service.binding]
-esc = ['reload-config', 'mode main']
-r = ['flatten-workspace-tree', 'mode main']
-f = ['layout floating tiling', 'mode main']
-backspace = ['close-all-windows-but-current', 'mode main']
+esc = ['reload-config', 'mode main', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main']
+r = ['flatten-workspace-tree', 'mode main', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main']
+f = ['layout floating tiling', 'mode main', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main']
+backspace = ['close-all-windows-but-current', 'mode main', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main']
 
-alt-shift-h = ['join-with left', 'mode main']
-alt-shift-j = ['join-with down', 'mode main']
-alt-shift-k = ['join-with up', 'mode main']
-alt-shift-l = ['join-with right', 'mode main']
+alt-shift-h = ['join-with left', 'mode main', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main']
+alt-shift-j = ['join-with down', 'mode main', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main']
+alt-shift-k = ['join-with up', 'mode main', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main']
+alt-shift-l = ['join-with right', 'mode main', 'exec-and-forget sketchybar --trigger aerospace_mode_change MODE=main']
