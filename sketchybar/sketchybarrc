@@ -14,6 +14,7 @@ export FG_COLOR=0xfffffaf3
 export FG_MUTED=0xff444444
 export DARK=0xff000001
 export GOLD=0xffff000f
+export GOLD_DIM=0xff5c0005
 export GREEN=0xff8ce00a
 export RED=0xffff000f
 export YELLOW=0xffff000f
@@ -182,6 +183,17 @@ sketchybar --add item battery right \
   script="$PLUGIN_DIR/battery.sh" \
   --subscribe battery system_woke power_source_change
 
+# Wifi. No sketchybar event fires on a network change, so this polls, and wakes
+# are the one moment the SSID is reliably stale.
+sketchybar --add item wifi right \
+  --set wifi \
+  icon.color=$FG_COLOR \
+  icon.font="Hack Nerd Font:Bold:14.0" \
+  update_freq=30 \
+  click_script="open 'x-apple.systempreferences:com.apple.Network-Settings.extension'" \
+  script="$PLUGIN_DIR/wifi.sh" \
+  --subscribe wifi system_woke
+
 # CPU usage
 sketchybar --add item cpu right \
   --set cpu \
@@ -191,6 +203,19 @@ sketchybar --add item cpu right \
   update_freq=5 \
   click_script="open -a 'Activity Monitor'" \
   script="$PLUGIN_DIR/cpu.sh"
+
+# A 32-sample history of the same number the cpu item shows. cpu.sh pushes to
+# it, so the reading and the graph can never disagree.
+sketchybar --add graph cpu_graph right 32 \
+  --set cpu_graph \
+  graph.color=$RED \
+  graph.fill_color=$GOLD_DIM \
+  graph.line_width=1 \
+  icon.drawing=off \
+  label.drawing=off \
+  padding_left=2 \
+  padding_right=6 \
+  background.height=20
 
 # Swap in use. memswap.sh has been sitting in plugins/ unreferenced; it turns
 # red on its own once macOS starts swapping, which is worth seeing.
@@ -205,7 +230,7 @@ sketchybar --add item memswap right \
 
 # One pill around the whole system group rather than five in a row. The items
 # above draw no background of their own, so this is the only fill on that side.
-sketchybar --add bracket status clock volume battery cpu memswap \
+sketchybar --add bracket status clock volume battery wifi cpu cpu_graph memswap \
   --set status \
   background.drawing=on \
   background.color=$ITEM_BG_COLOR \

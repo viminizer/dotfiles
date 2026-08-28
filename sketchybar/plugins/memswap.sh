@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Purple Custom colors
+# Palette, rewritten by theme/apply.py
 FG_MUTED="0xff444444"
 YELLOW="0xffff000f"
 RED="0xffff000f"

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Purple Custom colors
+# Palette, rewritten by theme/apply.py
 GREEN="0xff8ce00a"
 YELLOW="0xffff000f"
 RED="0xffff000f"

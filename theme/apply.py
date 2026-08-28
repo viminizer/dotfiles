@@ -88,6 +88,7 @@ TARGETS = [
     "sketchybar/plugins/cpu.sh",
     "sketchybar/plugins/memswap.sh",
     "sketchybar/plugins/space_windows.sh",
+    "sketchybar/plugins/wifi.sh",
 ]
 
 

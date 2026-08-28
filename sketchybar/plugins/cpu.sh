@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Purple Custom colors
+# Palette, rewritten by theme/apply.py
 YELLOW="0xffff000f"
 GOLD="0xffff000f"
 RED="0xffff000f"
@@ -37,7 +37,11 @@ else
   LABEL_COLOR="$FG"
 fi
 
+# The graph wants 0..1, and sh has no floating point, so awk does the divide.
+FRACTION="$(awk -v c="$CPU" 'BEGIN { printf "%.3f", c / 100 }')"
+
 sketchybar --set "$NAME" \
   label="${CPU}%" \
   icon.color="$ICON_COLOR" \
-  label.color="$LABEL_COLOR"
+  label.color="$LABEL_COLOR" \
+  --push cpu_graph "$FRACTION"
