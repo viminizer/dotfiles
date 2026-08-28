@@ -38,6 +38,12 @@ TEXT_CAP = 0.96
 # always looked crisp, measures 15.79:1, so that is the bar. Set to 0 to leave
 # themes exactly as shipped.
 CONTRAST_FLOOR = 15.8
+# Minimum contrast for the syntax colours. This matters more than the plain
+# foreground floor above, because in code almost everything you read is syntax
+# coloured. Kanagawa is deliberately muted and averages 5.57:1, roughly half of
+# Purple-Custom's 7.06 and 1984_dark's 10.12, which is why it still read as
+# hazy once the background alone had been solved.
+SYNTAX_FLOOR = 8.0
 # How light the text may be pushed while solving for it. The text is moved
 # first, since it has more headroom than the background has room to darken.
 FG_CEILING = 0.93
@@ -98,6 +104,22 @@ def wcag(hex6):
 def contrast(a, b):
     x, y = wcag(a), wcag(b)
     return (max(x, y) + 0.05) / (min(x, y) + 0.05)
+
+
+def raise_to(color, bg, floor):
+    """Lighten a colour until it clears `floor` against bg, holding hue.
+
+    Saturation is preserved, so autumnRed stays recognisably autumnRed; it just
+    stops disappearing into the background.
+    """
+    if floor <= 0 or contrast(color, bg) >= floor:
+        return color
+    h, l, sat = colorsys.rgb_to_hls(*[c / 255 for c in rgb(color)])
+    while l < 0.88 and contrast(color, bg) < floor:
+        l += 0.005
+        r, g, b = colorsys.hls_to_rgb(h, l, sat)
+        color = "".join(f"{round(x * 255):02x}" for x in (r, g, b))
+    return color
 
 
 def solve_contrast(bg, fg):
@@ -234,9 +256,9 @@ def roles_from(c):
         # the clock. Every theme ships one as color3, so take it directly.
         "gold": yellow,
         "gold_dim": relight(yellow, 0.18, 1.1),
-        "yellow": lift(yellow),
-        "green": lift(c["color2"]),
-        "red": lift(c["color1"]),
+        "yellow": raise_to(lift(yellow), bg, SYNTAX_FLOOR),
+        "green": raise_to(lift(c["color2"]), bg, SYNTAX_FLOOR),
+        "red": raise_to(lift(c["color1"]), bg, SYNTAX_FLOOR),
         "pink": accent,
     }
 
@@ -314,10 +336,11 @@ export MAGENTA=0xff{r['accent_soft']}"""
         elif key in ("selection_background", "selection_foreground"):
             return line
         elif re.fullmatch(r"color(?:[1-689]|1[0-4])", key):
-            # Syntax colours are left near enough alone. They gain contrast for
-            # free once the background darkens, and they carry meaning through
-            # hue, so they wash out sooner than plain text does.
-            new_value = lift(value.lower(), LIFT * 0.55)
+            # Every syntax colour is raised to the floor against the solved
+            # background. This is the change that actually clears the haze in
+            # code, since the plain foreground is a small share of what is on
+            # screen in an editor.
+            new_value = raise_to(lift(value.lower(), LIFT * 0.55), r["bg"], SYNTAX_FLOOR)
         else:
             return line
         return f"{pad}{key}{gap}#{new_value}{tail}"
