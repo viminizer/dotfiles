@@ -43,3 +43,7 @@ debug
 foo.*
 *.log
 data
+
+# --- Python bytecode from theme/apply.py ---
+__pycache__/
+*.pyc
