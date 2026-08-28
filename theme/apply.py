@@ -21,12 +21,11 @@ import re
 import sys
 import zipfile
 
-# How much desktop shows through kitty, and how much the text is brightened to
-# pay for it. Leakage costs contrast: the background lifts toward the desktop
-# while the text does not, so the text is lifted to match. Blur stays off. It
-# samples a wide radius, so bright patches in the wallpaper smear across the
-# whole window, and that smear was the fog, not the leakage itself.
-OPACITY = 0.90
+# Fully opaque. Blur stays off regardless: it samples a wide radius, so bright
+# patches in the wallpaper smear across the whole window, and that smear was
+# what read as fog. Drop this below 1.0 to let the desktop back through; the
+# text lift below exists to pay for the contrast that costs.
+OPACITY = 1.0
 LIFT = 0.20
 # Ceiling on how light text may get. Past about 0.96 every theme's text lands
 # on the same near-white and you can no longer tell them apart.
