@@ -21,6 +21,14 @@ import re
 import sys
 import zipfile
 
+# How much desktop shows through kitty, and how much the text is brightened to
+# pay for it. Leakage costs contrast: the background lifts toward the desktop
+# while the text does not, so the text is lifted to match. Blur stays off. It
+# samples a wide radius, so bright patches in the wallpaper smear across the
+# whole window, and that smear was the fog, not the leakage itself.
+OPACITY = 0.90
+LIFT = 0.07
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STATE = ROOT / "theme" / "current.json"
 CACHE = pathlib.Path.home() / "Library/Caches/kitty/kitty-themes.zip"
@@ -89,11 +97,23 @@ def read_theme(name):
     return raw, colors
 
 
+def lift(hex6):
+    """Brighten a colour to pay for what the desktop leakage costs in contrast.
+
+    Only foreground-ish colours get this. Lifting the background too would keep
+    the tint we are trying to spend the leakage budget on.
+    """
+    h, l, s = colorsys.rgb_to_hls(*[c / 255 for c in rgb(hex6)])
+    r, g, b = colorsys.hls_to_rgb(h, min(0.92, l + LIFT), s)
+    return "".join(f"{round(x * 255):02x}" for x in (r, g, b))
+
+
 def roles_from(c):
     """Map a kitty palette onto the roles the configs actually use."""
-    bg, fg = c["background"], c["foreground"]
-    accent = c["color5"]
-    yellow = c["color3"]
+    bg = c["background"]
+    fg = lift(c["foreground"])
+    accent = lift(c["color5"])
+    yellow = lift(c["color3"])
 
     # color0 is usually a raised surface, but some themes (kanagawa) make it
     # darker than the background, which would make every pill disappear.
@@ -114,14 +134,14 @@ def roles_from(c):
         "accent_bright": relight(accent, 0.82),
         "fg": fg,
         "fg_alt": fg,
-        "muted": c.get("color8") or blend(fg, bg, 0.45),
+        "muted": lift(c["color8"]) if c.get("color8") else blend(fg, bg, 0.45),
         # The warm accent carries the bar outline, the active window border and
         # the clock. Every theme ships one as color3, so take it directly.
         "gold": yellow,
         "gold_dim": relight(yellow, 0.18, 1.1),
         "yellow": yellow,
-        "green": c["color2"],
-        "red": c["color1"],
+        "green": lift(c["color2"]),
+        "red": lift(c["color1"]),
         "pink": c.get("color13", accent),
     }
 
@@ -195,7 +215,7 @@ export MAGENTA=0xff{r['accent_soft']}"""
     # Every other theme is ten to twenty times brighter, so any translucency at
     # all reads as a tint over the screen. Scaling it to background brightness
     # still left 5% coming through, and that was still visible.
-    kc = re.sub(r"^background_opacity .*$", "background_opacity 1.0", kc, flags=re.M)
+    kc = re.sub(r"^background_opacity .*$", f"background_opacity {OPACITY}", kc, flags=re.M)
     kc = re.sub(r"^background_blur .*$", "background_blur 0", kc, flags=re.M)
 
     # The tab bar is set here rather than left to the theme file, for two
@@ -211,7 +231,7 @@ export MAGENTA=0xff{r['accent_soft']}"""
     }
     for key, value in tabs.items():
         kc = re.sub(rf"^{key}\s+\S+$", f"{key:<23} #{value}", kc, flags=re.M)
-    print("  background_opacity 1.0, blur 0")
+    print(f"  background_opacity {OPACITY}, blur 0")
     kitty_conf.write_text(kc)
     print(f"  repainted kitty/kitty.conf -> themes/{name}.conf")
 
