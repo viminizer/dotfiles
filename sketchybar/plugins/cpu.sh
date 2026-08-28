@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # Purple Custom colors
-YELLOW="0xfffacc15"
-GOLD="0xffc9971a"
-RED="0xfff87171"
-FG="0xffe2e0e7"
+YELLOW="0xffc5aa79"
+GOLD="0xffc0a36e"
+RED="0xffe09b9d"
+FG="0xfff3f1e7"
 
 # This used to sum `ps -A -o %cpu`, but that column is each process's average
 # over its whole lifetime, not what it is doing now. Summing it reported 92% on

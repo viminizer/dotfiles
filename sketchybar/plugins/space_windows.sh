@@ -9,9 +9,9 @@
 
 source "$CONFIG_DIR/plugins/icon_map_fn.sh"
 
-FOCUSED_BG=0xff7c3aed
-UNFOCUSED_BG=0xff2e1065
-ACCENT=0xffa78bfa
+FOCUSED_BG=0xff2d4f67
+UNFOCUSED_BG=0xff313035
+ACCENT=0xff7e9cd8
 
 workspaces=$(aerospace list-workspaces --all --format '%{workspace}|%{monitor-appkit-nsscreen-screens-id}')
 windows=$(aerospace list-windows --all --format '%{workspace}|%{app-name}')
