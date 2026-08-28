@@ -32,6 +32,16 @@ LIFT = 0.0
 # distinguishable from each other.
 TEXT_CAP = 0.96
 
+# Minimum contrast between text and background. Anything below roughly 14:1
+# reads as haze on a non-retina panel, which is what made every mid-dark theme
+# look foggy no matter how opaque the window was. Purple-Custom, the one that
+# always looked crisp, measures 15.79:1, so that is the bar. Set to 0 to leave
+# themes exactly as shipped.
+CONTRAST_FLOOR = 15.8
+# How light the text may be pushed while solving for it. The text is moved
+# first, since it has more headroom than the background has room to darken.
+FG_CEILING = 0.93
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STATE = ROOT / "theme" / "current.json"
 CACHE = pathlib.Path.home() / "Library/Caches/kitty/kitty-themes.zip"
@@ -74,6 +84,39 @@ def relight(hex6, lightness, sat=1.0):
     h, _, s_ = colorsys.rgb_to_hls(*[c / 255 for c in rgb(hex6)])
     r, g, b = colorsys.hls_to_rgb(h, lightness, min(1.0, s_ * sat))
     return "".join(f"{round(c * 255):02x}" for c in (r, g, b))
+
+
+def wcag(hex6):
+    """Relative luminance per WCAG, which is not the same as perceptual luma."""
+    out = []
+    for c in rgb(hex6):
+        c /= 255
+        out.append(c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4)
+    return 0.2126 * out[0] + 0.7152 * out[1] + 0.0722 * out[2]
+
+
+def contrast(a, b):
+    x, y = wcag(a), wcag(b)
+    return (max(x, y) + 0.05) / (min(x, y) + 0.05)
+
+
+def solve_contrast(bg, fg):
+    """Raise text-on-background contrast to CONTRAST_FLOOR, keeping both hues.
+
+    Lifts the text first and only then darkens the background, because the text
+    has more headroom and the background carries more of a theme's identity.
+    On Kanagawa this lands the background on #16161d, which is sumiInk0, one of
+    its own colours: the theme already contained the answer.
+    """
+    if CONTRAST_FLOOR <= 0 or contrast(fg, bg) >= CONTRAST_FLOOR:
+        return bg, fg
+    fg = relight(fg, min(FG_CEILING, max(FG_CEILING, 0)))
+    h, l, sat = colorsys.rgb_to_hls(*[c / 255 for c in rgb(bg)])
+    while l > 0.015 and contrast(fg, bg) < CONTRAST_FLOOR:
+        l -= 0.002
+        r, g, b = colorsys.hls_to_rgb(h, l, sat)
+        bg = "".join(f"{round(x * 255):02x}" for x in (r, g, b))
+    return bg, fg
 
 
 def luma(hex6):
@@ -158,8 +201,7 @@ def pick_focus(c, accent):
 
 def roles_from(c):
     """Map a kitty palette onto the roles the configs actually use."""
-    bg = c["background"]
-    fg = lift(c["foreground"])
+    bg, fg = solve_contrast(c["background"], lift(c["foreground"]))
     # The accent is a fill with dark text on it, so it must not be lifted:
     # brightening it just washes it toward white. Only text and icons get lift.
     accent = raw_accent = pick_accent(c)
@@ -263,11 +305,18 @@ export MAGENTA=0xff{r['accent_soft']}"""
         if not m:
             return line
         pad, key, gap, value, tail = m.groups()
-        if key in ("background", "selection_background", "selection_foreground"):
-            return line
-        if key in ("foreground", "color7", "color15", "cursor"):
+        if key == "background":
+            new_value = r["bg"]          # solved for the contrast floor
+        elif key in ("foreground", "color7", "color15"):
+            new_value = r["fg"]
+        elif key == "cursor":
             new_value = lift(value.lower())
+        elif key in ("selection_background", "selection_foreground"):
+            return line
         elif re.fullmatch(r"color(?:[1-689]|1[0-4])", key):
+            # Syntax colours are left near enough alone. They gain contrast for
+            # free once the background darkens, and they carry meaning through
+            # hue, so they wash out sooner than plain text does.
             new_value = lift(value.lower(), LIFT * 0.55)
         else:
             return line
