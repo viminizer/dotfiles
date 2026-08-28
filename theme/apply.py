@@ -43,13 +43,13 @@ CONTRAST_FLOOR = 15.8
 # coloured. Kanagawa is deliberately muted and averages 5.57:1, roughly half of
 # Purple-Custom's 7.06 and 1984_dark's 10.12, which is why it still read as
 # hazy once the background alone had been solved.
-SYNTAX_FLOOR = 8.0
+SYNTAX_FLOOR = 0.0
 
 # Which palette slot carries the window borders, the bar outline and the clock.
 # None derives it: normally the theme's yellow, stepping to blue when the accent
 # has already claimed yellow. Name a slot ("color4", "color6") to override when
 # the derived one is wrong for a particular theme.
-BORDER_SLOT = None
+BORDER_SLOT = "color1"
 
 # Target perceptual luma for the background, or None to leave it as shipped.
 #
@@ -58,7 +58,7 @@ BORDER_SLOT = None
 # always looked right; the themes that read as foggy were at 15 to 52, and
 # raising their foregrounds never fixed it because the background was the thing
 # that mattered. Hue and saturation are held, so a theme keeps its tint.
-BG_LUMA = None
+BG_LUMA = 2.5
 
 # Minimum contrast for dimmed text against the surface it sits on: inactive tmux
 # window tabs, inactive kitty tabs, the swap icon in the bar.

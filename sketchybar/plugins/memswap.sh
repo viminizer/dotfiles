@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Purple Custom colors
-FG_MUTED="0xff736d7c"
-YELLOW="0xfffacc15"
-RED="0xfff87171"
+FG_MUTED="0xff444444"
+YELLOW="0xffff000f"
+RED="0xffff000f"
 
 # `sysctl vm.swapusage` prints:
 #   vm.swapusage: total = 7168.00M  used = 6148.25M  free = 1019.75M

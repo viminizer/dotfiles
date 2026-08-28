@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # Purple Custom colors
-GREEN="0xff22c55e"
-YELLOW="0xfffacc15"
-RED="0xfff87171"
-FG="0xffe2e0e7"
+GREEN="0xff8ce00a"
+YELLOW="0xffff000f"
+RED="0xffff000f"
+FG="0xfffffaf3"
 
 # One pmset call, not two. `[0-9]` rather than `\d`, which is a PCRE escape that
 # only happens to work because macOS grep is lenient about it.
