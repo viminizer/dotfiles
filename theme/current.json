@@ -1,21 +1,21 @@
 {
-  "theme": "Purple-Custom",
+  "theme": "GruvboxMaterialDarkMedium",
   "roles": {
-    "bg": "050014",
-    "surface": "2e1065",
-    "focus": "7c3aed",
-    "accent": "a78bfa",
-    "accent_strong": "8b5cf6",
-    "accent_soft": "c084fc",
-    "accent_bright": "d8b4fe",
-    "fg": "e2e0e7",
-    "fg_alt": "e4e4e7",
-    "muted": "736d7c",
-    "gold": "c9971a",
-    "gold_dim": "4a3200",
-    "yellow": "facc15",
-    "green": "22c55e",
-    "red": "f87171",
-    "pink": "f472b6"
+    "bg": "161616",
+    "surface": "665c54",
+    "focus": "99420a",
+    "accent": "e78a4e",
+    "accent_strong": "e58242",
+    "accent_soft": "e78a4e",
+    "accent_bright": "f4caae",
+    "fg": "f4efe6",
+    "fg_alt": "f4efe6",
+    "muted": "928374",
+    "gold": "7daea3",
+    "gold_dim": "223a34",
+    "yellow": "8ab6ac",
+    "green": "a9b665",
+    "red": "f0948f",
+    "pink": "e78a4e"
   }
 }
