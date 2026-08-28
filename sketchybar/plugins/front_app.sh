@@ -1,8 +1,7 @@
-#!/bin/sh
-
-PLUGIN_DIR="$CONFIG_DIR/plugins"
+#!/bin/bash
 
 if [ "$SENDER" = "front_app_switched" ]; then
-  icon="$($PLUGIN_DIR/icon_map_fn.sh "$INFO")"
-  sketchybar --set "$NAME" label="$INFO" icon="$icon"
+  source "$CONFIG_DIR/plugins/icon_map_fn.sh"
+  icon_map "$INFO"
+  sketchybar --set "$NAME" label="$INFO" icon="$icon_result"
 fi

@@ -3,7 +3,10 @@
 # ===== Startup =====
 start-at-login = true
 after-login-command = []
-after-startup-command = ['exec-and-forget sketchybar']
+# sketchybar itself is started by launchd (`brew services start sketchybar`) so it
+# restarts on its own if it dies. Launchd may win the race at login, though, and a
+# bar built before AeroSpace answers has no workspaces in it, so reload it here.
+after-startup-command = ['exec-and-forget sketchybar --reload']
 
 # Notify sketchybar on workspace change
 exec-on-workspace-change = [

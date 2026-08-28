@@ -51,21 +51,22 @@ sketchybar --default "${default[@]}"
 
 ##### Aerospace Workspaces #####
 sketchybar --add event aerospace_workspace_change
-sketchybar --add event aerospace_monitor_change
 
-for sid in $(aerospace list-workspaces --all); do
+# Launchd can start us before AeroSpace has finished coming up, and without it
+# there are no workspaces to build items from. Give it a few seconds.
+for _ in $(seq 1 20); do
+  workspaces=$(aerospace list-workspaces --all 2>/dev/null) && [ -n "$workspaces" ] && break
+  sleep 0.5
+done
+
+for sid in $workspaces; do
   sketchybar --add item space.$sid left \
-    --subscribe space.$sid aerospace_workspace_change \
     --set space.$sid \
-    display="$(
-      v=$(aerospace list-windows --workspace "$sid" --format "%{monitor-appkit-nsscreen-screens-id}" | cut -c1)
-      echo "${v:-1}"
-    )" \
     drawing=off \
     background.color=$ITEM_BG_COLOR \
     background.corner_radius=4 \
     background.drawing=on \
-    background.height=18 \
+    background.height=22 \
     icon="$sid" \
     icon.font="SF Pro:Bold:11.0" \
     icon.color=$FG_COLOR \
@@ -75,35 +76,13 @@ for sid in $(aerospace list-workspaces --all); do
     label.padding_right=14 \
     label.padding_left=2 \
     label.color=$FG_COLOR \
-    click_script="aerospace workspace $sid" \
-    script="$CONFIG_DIR/plugins/aerospace.sh $sid"
+    click_script="aerospace workspace $sid"
 done
 
-# Load Icons on startup
-for mid in $(aerospace list-monitors | cut -c1); do
-  for sid in $(aerospace list-workspaces --monitor $mid --empty no); do
-    apps=$(aerospace list-windows --workspace "$sid" | awk -F'|' '{gsub(/^ *| *$/, "", $2); print $2}')
-    sketchybar --set space.$sid drawing=on
-    icon_strip=" "
-    if [ "${apps}" != "" ]; then
-      while read -r app; do
-        icon_strip+=" $($CONFIG_DIR/plugins/icon_map_fn.sh "$app")"
-      done <<<"${apps}"
-    else
-      icon_strip=""
-    fi
-    sketchybar --set space.$sid label="$icon_strip"
-  done
-done
-
-# Always show the focused workspace at startup
-FOCUSED="$(aerospace list-workspaces --focused)"
-sketchybar --set space.$FOCUSED drawing=on
-
-# Trigger initial workspace change event to highlight focused workspace
-sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE="$FOCUSED"
-
-# Invisible separator (handles workspace window updates)
+# Invisible item that owns every workspace update. It redraws all the space.*
+# items at once, so they never need scripts of their own. The poll is a safety
+# net: AeroSpace has no "window opened" event, so without it the icons would go
+# stale whenever you open or close a window without switching apps.
 sketchybar --add item space_separator left \
   --set space_separator \
   icon.drawing=off \
@@ -111,8 +90,9 @@ sketchybar --add item space_separator left \
   background.drawing=off \
   padding_left=6 \
   padding_right=0 \
+  update_freq=5 \
   script="$PLUGIN_DIR/space_windows.sh" \
-  --subscribe space_separator aerospace_workspace_change front_app_switched space_windows_change aerospace_monitor_change
+  --subscribe space_separator aerospace_workspace_change front_app_switched
 
 # Front app
 sketchybar --add item front_app left \

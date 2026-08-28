@@ -1,51 +1,48 @@
 #!/bin/bash
+# Redraws every workspace item in one pass: app icons, which monitor the
+# workspace lives on, empty/focused visibility, and the focus highlight.
+#
+# This deliberately refreshes everything rather than trying to patch individual
+# workspaces, because a full refresh costs two `aerospace` calls and one batched
+# `sketchybar` call. Asking aerospace about each workspace separately was ~10x
+# slower, and patching single workspaces meant the ones you left went stale.
 
-if [ "$SENDER" = "aerospace_monitor_change" ]; then
-  sketchybar --set space."$FOCUSED_WORKSPACE" display="$TARGET_MONITOR"
-  exit 0
-fi
+source "$CONFIG_DIR/plugins/icon_map_fn.sh"
 
-# Helper function to update a workspace's icons
-update_workspace() {
-  local sid="$1"
-  local apps=$(aerospace list-windows --workspace "$sid" | awk -F'|' '{gsub(/^ *| *$/, "", $2); print $2}')
-  if [ "${apps}" != "" ]; then
-    sketchybar --set space.$sid drawing=on
-    local icon_strip=" "
-    while read -r app; do
-      icon_strip+=" $($CONFIG_DIR/plugins/icon_map_fn.sh "$app")"
-    done <<<"${apps}"
-    sketchybar --set space.$sid label="$icon_strip"
+FOCUSED_BG=0xff3d59a1
+UNFOCUSED_BG=0xff292e42
+ACCENT=0xff7aa2f7
+
+workspaces=$(aerospace list-workspaces --all --format '%{workspace}|%{monitor-appkit-nsscreen-screens-id}')
+windows=$(aerospace list-windows --all --format '%{workspace}|%{app-name}')
+focused=${FOCUSED_WORKSPACE:-$(aerospace list-workspaces --focused)}
+
+# bash 3.2 on macOS has no associative arrays, so the icon strips are built by
+# scanning the window list per workspace. It stays in-process, so it's cheap.
+args=()
+while IFS='|' read -r sid mid; do
+  [ -n "$sid" ] || continue
+
+  strip=""
+  while IFS='|' read -r wsid app; do
+    [ "$wsid" = "$sid" ] || continue
+    icon_map "$app"
+    strip="$strip $icon_result"
+  done <<<"$windows"
+
+  # An empty workspace only earns a slot in the bar while it's the focused one.
+  if [ -n "$strip" ] || [ "$sid" = "$focused" ]; then
+    drawing=on
   else
-    # Hide empty workspaces (except focused)
-    if [ "$sid" != "$FOCUSED_WORKSPACE" ]; then
-      aerospace move-workspace-to-monitor --workspace "$sid" 1 2>/dev/null
-      sketchybar --set space.$sid drawing=off display=1
-    else
-      sketchybar --set space.$sid label=""
-    fi
+    drawing=off
   fi
-}
 
-# Get focused workspace if not provided by event
-if [ -z "$FOCUSED_WORKSPACE" ]; then
-  FOCUSED_WORKSPACE="$(aerospace list-workspaces --focused)"
-fi
-
-if [ "$SENDER" = "aerospace_workspace_change" ]; then
-  # Update previous workspace
-  if [ -n "$PREV_WORKSPACE" ]; then
-    update_workspace "$PREV_WORKSPACE"
+  args+=(--set "space.$sid" drawing=$drawing display="$mid" label="$strip")
+  if [ "$sid" = "$focused" ]; then
+    args+=(background.color=$FOCUSED_BG background.border_color=$ACCENT background.border_width=1)
+  else
+    args+=(background.color=$UNFOCUSED_BG background.border_width=0)
   fi
-  # Update focused workspace
-  update_workspace "$FOCUSED_WORKSPACE"
-  # Always show focused workspace
-  sketchybar --set space.$FOCUSED_WORKSPACE drawing=on
-elif [ "$SENDER" = "front_app_switched" ] || [ "$SENDER" = "space_windows_change" ]; then
-  # Update all non-empty workspaces when apps change
-  for sid in $(aerospace list-workspaces --all); do
-    update_workspace "$sid"
-  done
-  # Always show focused workspace
-  sketchybar --set space.$FOCUSED_WORKSPACE drawing=on
-fi
+done <<<"$workspaces"
+
+sketchybar "${args[@]}"
