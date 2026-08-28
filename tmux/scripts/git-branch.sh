@@ -12,4 +12,4 @@ pane_path=${1:-}
 branch=$(cd "$pane_path" 2>/dev/null && git branch --show-current 2>/dev/null)
 [ -n "$branch" ] || exit 0
 
-printf '#[fg=#f472b6]  %s ' "$branch"
+printf '#[fg=#f6c177]  %s ' "$branch"
