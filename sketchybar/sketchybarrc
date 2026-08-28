@@ -93,6 +93,17 @@ for sid in $workspaces; do
     click_script="aerospace workspace $sid"
 done
 
+# One pill behind the whole workspace group, the same treatment the status
+# items on the right get, so both ends of the bar read as single objects.
+sketchybar --add bracket workspaces '/space\..*/' \
+  --set workspaces \
+  background.drawing=on \
+  background.color=$BAR_COLOR \
+  background.border_color=$ITEM_BG_COLOR \
+  background.border_width=1 \
+  background.corner_radius=6 \
+  background.height=24
+
 # Invisible item that owns every workspace update. It redraws all the space.*
 # items at once, so they never need scripts of their own. The poll is a safety
 # net: AeroSpace has no "window opened" event, so without it the icons would go

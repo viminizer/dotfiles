@@ -190,16 +190,13 @@ export MAGENTA=0xff{r['accent_soft']}"""
             else "# include ./themes/Code-Readability.conf")
     kc = re.sub(r"^#? ?include \./themes/Code-Readability\.conf$", line, kc, flags=re.M)
 
-    # Opacity has to follow the theme, not sit at a fixed value. At 0.7 the
-    # original near-black background (luma 2.5) still read as black, because the
-    # 30% of desktop showing through could not lift it. On a background ten to
-    # twenty times brighter the same setting reads as fog, and the blur smears
-    # the desktop into it. Brighter background, less translucency.
-    l = luma(new_roles["bg"])
-    opacity = 0.72 if l < 12 else 0.88 if l < 28 else 0.95 if l < 45 else 1.0
-    blur = 10 if opacity < 0.95 else 0
-    kc = re.sub(r"^background_opacity .*$", f"background_opacity {opacity}", kc, flags=re.M)
-    kc = re.sub(r"^background_blur .*$", f"background_blur {blur}", kc, flags=re.M)
+    # Fully opaque. 0.7 was invisible only because Purple-Custom's background is
+    # luma 2.5, near black: the desktop showing through had nothing to lift.
+    # Every other theme is ten to twenty times brighter, so any translucency at
+    # all reads as a tint over the screen. Scaling it to background brightness
+    # still left 5% coming through, and that was still visible.
+    kc = re.sub(r"^background_opacity .*$", "background_opacity 1.0", kc, flags=re.M)
+    kc = re.sub(r"^background_blur .*$", "background_blur 0", kc, flags=re.M)
 
     # The tab bar is set here rather than left to the theme file, for two
     # reasons: the themes mostly paint the active tab the same colour as the
@@ -214,7 +211,7 @@ export MAGENTA=0xff{r['accent_soft']}"""
     }
     for key, value in tabs.items():
         kc = re.sub(rf"^{key}\s+\S+$", f"{key:<23} #{value}", kc, flags=re.M)
-    print(f"  background_opacity {opacity} (bg luma {l:.1f}), blur {blur}")
+    print("  background_opacity 1.0, blur 0")
     kitty_conf.write_text(kc)
     print(f"  repainted kitty/kitty.conf -> themes/{name}.conf")
 
