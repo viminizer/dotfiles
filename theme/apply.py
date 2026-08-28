@@ -50,6 +50,12 @@ SYNTAX_FLOOR = 8.0
 # has already claimed yellow. Name a slot ("color4", "color6") to override when
 # the derived one is wrong for a particular theme.
 BORDER_SLOT = None
+
+# Minimum contrast for dimmed text against the surface it sits on: inactive tmux
+# window tabs, inactive kitty tabs, the swap icon in the bar. Some themes put
+# color8 almost on top of color0 and the result is unreadable rather than merely
+# quiet. Argonaut is #444444 on #222222, which is 1.63:1.
+MUTED_FLOOR = 5.0
 # How light the text may be pushed while solving for it. The text is moved
 # first, since it has more headroom than the background has room to darken.
 FG_CEILING = 0.93
@@ -260,7 +266,9 @@ def roles_from(c):
         "accent_bright": relight(accent, 0.82),
         "fg": fg,
         "fg_alt": fg,
-        "muted": lift(c["color8"]) if c.get("color8") else blend(fg, bg, 0.45),
+        "muted": raise_to(
+            lift(c["color8"]) if c.get("color8") else blend(fg, bg, 0.45),
+            surface, MUTED_FLOOR),
         # The warm accent carries the bar outline, the active window border and
         # the clock. Every theme ships one as color3, so take it directly.
         "gold": yellow,
