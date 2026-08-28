@@ -1,0 +1,21 @@
+{
+  "theme": "Purple-Custom",
+  "roles": {
+    "bg": "050014",
+    "surface": "2e1065",
+    "focus": "7c3aed",
+    "accent": "a78bfa",
+    "accent_strong": "8b5cf6",
+    "accent_soft": "c084fc",
+    "accent_bright": "d8b4fe",
+    "fg": "e2e0e7",
+    "fg_alt": "e4e4e7",
+    "muted": "736d7c",
+    "gold": "c9971a",
+    "gold_dim": "4a3200",
+    "yellow": "facc15",
+    "green": "22c55e",
+    "red": "f87171",
+    "pink": "f472b6"
+  }
+}
