@@ -25,7 +25,7 @@ import zipfile
 # patches in the wallpaper smear across the whole window, and that smear was
 # what read as fog. Drop this below 1.0 to let the desktop back through; the
 # text lift below exists to pay for the contrast that costs.
-OPACITY = 1.0
+OPACITY = 0.9
 LIFT = 0.0
 # Ceiling on how light text may get, once LIFT is non-zero. Past about 0.96
 # every theme's text lands on the same near-white and they stop being
@@ -58,7 +58,7 @@ BORDER_SLOT = "color1"
 # always looked right; the themes that read as foggy were at 15 to 52, and
 # raising their foregrounds never fixed it because the background was the thing
 # that mattered. Hue and saturation are held, so a theme keeps its tint.
-BG_LUMA = 2.5
+BG_LUMA = 0.0
 
 # Minimum contrast for dimmed text against the surface it sits on: inactive tmux
 # window tabs, inactive kitty tabs, the swap icon in the bar.
