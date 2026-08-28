@@ -91,7 +91,9 @@ def read_theme(name):
     raw = z.read(paths[name]).decode()
     colors = {}
     for line in raw.splitlines():
-        m = re.match(r"^\s*(background|foreground|color\d+)\s+(#[0-9a-fA-F]{6})\s*$", line)
+        # Capture every colour key, not just background/foreground/colorN.
+        # selection_background lives outside that set and is wanted below.
+        m = re.match(r"^\s*(\w+)\s+(#[0-9a-fA-F]{6})\s*$", line)
         if m:
             colors[m.group(1)] = m.group(2)[1:].lower()
     for required in ("background", "foreground", "color1", "color2", "color3", "color5"):
@@ -136,6 +138,24 @@ def pick_accent(c):
     return best
 
 
+def pick_focus(c, accent):
+    """The fill behind the focused workspace.
+
+    Prefer selection_background: theme authors choose it specifically as a fill
+    that sits behind their foreground text, which is exactly this job, and it is
+    a real colour from the palette rather than one computed here. Kanagawa's is
+    waveBlue2, Rose Pine's and everforest's are equally deliberate.
+
+    Not every theme can supply it. Catppuccin and Gruvbox use a *light*
+    selection with dark text on it, which would be unreadable under the light
+    labels the bar uses, so those fall back to the re-lit accent.
+    """
+    sel = c.get("selection_background")
+    if sel and luma(sel) < 115 and luma(c["foreground"]) - luma(sel) > 90:
+        return sel
+    return relight(accent, 0.32, 1.15)
+
+
 def roles_from(c):
     """Map a kitty palette onto the roles the configs actually use."""
     bg = c["background"]
@@ -160,7 +180,7 @@ def roles_from(c):
         # A fill sitting behind light text has to be dark, so it is the accent
         # re-lit rather than blended: same hue, same saturation, less light. The
         # accent itself stays untouched, since it sits behind dark text instead.
-        "focus": relight(accent, 0.32, 1.15),
+        "focus": pick_focus(c, accent),
         "accent": accent,
         "accent_strong": relight(accent, 0.58),
         "accent_soft": accent,
