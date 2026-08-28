@@ -7,7 +7,7 @@ PLUGIN_DIR="$CONFIG_DIR/plugins"
 # come from the kitty theme (kitty/themes/Purple-Custom.conf and the tab bar
 # colours in kitty.conf), GOLD is the active window border from bordersrc. The
 # bar used to be Tokyo Night, which shared no colour with the terminal under it.
-export BAR_COLOR=0xf0050014       # kitty background
+export BAR_COLOR=0xff050014       # kitty background
 export ITEM_BG_COLOR=0xff2e1065   # kitty inactive tab background
 export ITEM_BG_FOCUSED=0xff7c3aed
 export ACCENT_COLOR=0xffa78bfa    # kitty active tab background
@@ -24,7 +24,7 @@ export MAGENTA=0xffc084fc
 sketchybar --bar \
   position=top \
   height=28 \
-  blur_radius=4 \
+  blur_radius=0 \
   color=$BAR_COLOR \
   margin=4 \
   corner_radius=6 \
