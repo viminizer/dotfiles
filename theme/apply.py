@@ -44,6 +44,12 @@ CONTRAST_FLOOR = 15.8
 # Purple-Custom's 7.06 and 1984_dark's 10.12, which is why it still read as
 # hazy once the background alone had been solved.
 SYNTAX_FLOOR = 8.0
+
+# Which palette slot carries the window borders, the bar outline and the clock.
+# None derives it: normally the theme's yellow, stepping to blue when the accent
+# has already claimed yellow. Name a slot ("color4", "color6") to override when
+# the derived one is wrong for a particular theme.
+BORDER_SLOT = None
 # How light the text may be pushed while solving for it. The text is moved
 # first, since it has more headroom than the background has room to darken.
 FG_CEILING = 0.93
@@ -230,7 +236,10 @@ def roles_from(c):
     # The warm accent carries the bar outline and window borders. If the theme's
     # signature colour is already that yellow, step across to the cool slot so
     # the two are still telling you different things.
-    yellow = c["color4"] if raw_accent == c["color3"] else c["color3"]
+    if BORDER_SLOT and c.get(BORDER_SLOT):
+        yellow = c[BORDER_SLOT]
+    else:
+        yellow = c["color4"] if raw_accent == c["color3"] else c["color3"]
 
     # color0 is usually a raised surface, but some themes (kanagawa) make it
     # darker than the background, which would make every pill disappear.
