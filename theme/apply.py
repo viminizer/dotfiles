@@ -26,9 +26,10 @@ import zipfile
 # what read as fog. Drop this below 1.0 to let the desktop back through; the
 # text lift below exists to pay for the contrast that costs.
 OPACITY = 1.0
-LIFT = 0.20
-# Ceiling on how light text may get. Past about 0.96 every theme's text lands
-# on the same near-white and you can no longer tell them apart.
+LIFT = 0.0
+# Ceiling on how light text may get, once LIFT is non-zero. Past about 0.96
+# every theme's text lands on the same near-white and they stop being
+# distinguishable from each other.
 TEXT_CAP = 0.96
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -105,8 +106,11 @@ def lift(hex6, amount=None):
     Only foreground-ish colours get this. Lifting the background too would keep
     the tint we are trying to spend the leakage budget on.
     """
+    by = LIFT if amount is None else amount
+    if by <= 0:
+        return hex6
     h, l, s = colorsys.rgb_to_hls(*[c / 255 for c in rgb(hex6)])
-    r, g, b = colorsys.hls_to_rgb(h, min(TEXT_CAP, l + (LIFT if amount is None else amount)), s)
+    r, g, b = colorsys.hls_to_rgb(h, min(TEXT_CAP, l + by), s)
     return "".join(f"{round(x * 255):02x}" for x in (r, g, b))
 
 
