@@ -14,6 +14,7 @@ configs is one of those roles, so repainting is a role-by-role substitution
 rather than a rewrite. That keeps hand edits to the configs intact.
 """
 
+import colorsys
 import json
 import pathlib
 import re
@@ -50,6 +51,18 @@ def blend(a, b, t):
     pastel palette: on Catppuccin it turned the yellow into a muddy tan.
     """
     return "".join(f"{round(x + (y - x) * t):02x}" for x, y in zip(rgb(a), rgb(b)))
+
+
+def relight(hex6, lightness, sat=1.0):
+    """Re-light a colour, keeping its hue and saturation.
+
+    Blending toward the background instead would desaturate: Catppuccin's pink
+    accent came out #8a708a, a grey mauve, which is what made the bar look
+    washed out. Dropping only the lightness keeps the colour crisp.
+    """
+    h, _, s_ = colorsys.rgb_to_hls(*[c / 255 for c in rgb(hex6)])
+    r, g, b = colorsys.hls_to_rgb(h, lightness, min(1.0, s_ * sat))
+    return "".join(f"{round(c * 255):02x}" for c in (r, g, b))
 
 
 def luma(hex6):
@@ -92,20 +105,20 @@ def roles_from(c):
         "bg": bg,
         "surface": surface,
         # A fill sitting behind light text has to be dark, so it is the accent
-        # mixed halfway into the background. The accent itself stays untouched
-        # because it sits behind background-coloured text instead.
-        "focus": blend(accent, bg, 0.5),
+        # re-lit rather than blended: same hue, same saturation, less light. The
+        # accent itself stays untouched, since it sits behind dark text instead.
+        "focus": relight(accent, 0.32, 1.15),
         "accent": accent,
-        "accent_strong": blend(accent, bg, 0.2),
+        "accent_strong": relight(accent, 0.58),
         "accent_soft": accent,
-        "accent_bright": blend(accent, fg, 0.35),
+        "accent_bright": relight(accent, 0.82),
         "fg": fg,
         "fg_alt": fg,
         "muted": c.get("color8") or blend(fg, bg, 0.45),
         # The warm accent carries the bar outline, the active window border and
         # the clock. Every theme ships one as color3, so take it directly.
         "gold": yellow,
-        "gold_dim": blend(yellow, bg, 0.72),
+        "gold_dim": relight(yellow, 0.18, 1.1),
         "yellow": yellow,
         "green": c["color2"],
         "red": c["color1"],
@@ -176,6 +189,18 @@ export MAGENTA=0xff{r['accent_soft']}"""
     line = ("include ./themes/Code-Readability.conf" if name == "Purple-Custom"
             else "# include ./themes/Code-Readability.conf")
     kc = re.sub(r"^#? ?include \./themes/Code-Readability\.conf$", line, kc, flags=re.M)
+
+    # Opacity has to follow the theme, not sit at a fixed value. At 0.7 the
+    # original near-black background (luma 2.5) still read as black, because the
+    # 30% of desktop showing through could not lift it. On a background ten to
+    # twenty times brighter the same setting reads as fog, and the blur smears
+    # the desktop into it. Brighter background, less translucency.
+    l = luma(new_roles["bg"])
+    opacity = 0.72 if l < 12 else 0.88 if l < 28 else 0.95 if l < 45 else 1.0
+    blur = 10 if opacity < 0.95 else 0
+    kc = re.sub(r"^background_opacity .*$", f"background_opacity {opacity}", kc, flags=re.M)
+    kc = re.sub(r"^background_blur .*$", f"background_blur {blur}", kc, flags=re.M)
+    print(f"  background_opacity {opacity} (bg luma {l:.1f}), blur {blur}")
     kitty_conf.write_text(kc)
     print(f"  repainted kitty/kitty.conf -> themes/{name}.conf")
 
