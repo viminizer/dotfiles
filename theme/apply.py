@@ -83,6 +83,7 @@ TARGETS = [
     "tmux/tmux.conf",
     "tmux/scripts/pr-status.sh",
     "tmux/scripts/git-branch.sh",
+    "tmux/scripts/runtimes.sh",
     "borders/bordersrc",
     "sketchybar/plugins/battery.sh",
     "sketchybar/plugins/cpu.sh",
@@ -340,6 +341,7 @@ export FG_COLOR=0xff{r['fg']}
 export FG_MUTED=0xff{r['muted']}
 export DARK=0xff{r['bg']}
 export GOLD=0xff{r['gold']}
+export GOLD_DIM=0xff{r['gold_dim']}
 export GREEN=0xff{r['green']}
 export RED=0xff{r['red']}
 export YELLOW=0xff{r['yellow']}
