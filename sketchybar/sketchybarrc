@@ -23,12 +23,12 @@ export MAGENTA=0xffff000f
 ##### Bar Appearance #####
 sketchybar --bar \
   position=top \
-  height=28 \
+  height=34 \
   blur_radius=0 \
   color=$BAR_COLOR \
   margin=10 \
   corner_radius=6 \
-  y_offset=4 \
+  y_offset=0 \
   padding_left=2 \
   padding_right=2 \
   border_color=$GOLD \
@@ -48,7 +48,7 @@ default=(
   label.padding_right=6
   background.color=$ITEM_BG_COLOR
   background.corner_radius=4
-  background.height=20
+  background.height=26
   background.drawing=off
 )
 sketchybar --default "${default[@]}"
@@ -80,7 +80,7 @@ for sid in $workspaces; do
     background.color=$ITEM_BG_COLOR \
     background.corner_radius=4 \
     background.drawing=on \
-    background.height=20 \
+    background.height=26 \
     icon="$sid" \
     icon.font="SF Pro:Bold:11.0" \
     icon.color=$FG_COLOR \
@@ -102,7 +102,7 @@ sketchybar --add bracket workspaces '/space\..*/' \
   background.border_color=$ITEM_BG_COLOR \
   background.border_width=1 \
   background.corner_radius=6 \
-  background.height=24
+  background.height=30
 
 # Invisible item that owns every workspace update. It redraws all the space.*
 # items at once, so they never need scripts of their own. The poll is a safety
@@ -124,7 +124,7 @@ sketchybar --add item front_app left \
   --set front_app \
   background.drawing=on \
   background.color=$ACCENT_COLOR \
-  background.height=20 \
+  background.height=26 \
   icon.font="sketchybar-app-font:Regular:12.0" \
   icon.color=$DARK \
   icon.padding_left=8 \
@@ -144,7 +144,7 @@ sketchybar --add item aerospace_mode left \
   icon.drawing=off \
   background.drawing=on \
   background.color=$RED \
-  background.height=20 \
+  background.height=26 \
   label.font="SF Pro:Bold:11.0" \
   label.color=$DARK \
   label.padding_left=8 \
@@ -215,7 +215,7 @@ sketchybar --add graph cpu_graph right 56 \
   label.drawing=off \
   padding_left=2 \
   padding_right=6 \
-  background.height=20
+  background.height=22
 
 # Swap in use. memswap.sh has been sitting in plugins/ unreferenced; it turns
 # red on its own once macOS starts swapping, which is worth seeing.
@@ -235,7 +235,7 @@ sketchybar --add bracket status clock volume battery wifi cpu cpu_graph memswap 
   background.drawing=on \
   background.color=$ITEM_BG_COLOR \
   background.corner_radius=6 \
-  background.height=22
+  background.height=28
 
 ##### Force all scripts to run the first time #####
 sketchybar --update
