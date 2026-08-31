@@ -6,7 +6,6 @@
 
 tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae", trusted: true
 tap "nikitabobko/tap"
-tap "unhappychoice/tap"
 
 # --- shell: zsh/.zshrc ---
 # Fish-like fast/unobtrusive autosuggestions for zsh
@@ -51,8 +50,6 @@ brew "lazydocker"
 brew "lazysql"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
-# Typing game bound to prefix + v in tmux.conf:197
-brew "unhappychoice/tap/gittype"
 
 # --- editor: nvim/ ---
 # Ambitious Vim-fork focused on extensibility and agility
