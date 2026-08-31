@@ -77,3 +77,9 @@ cask "font-sf-pro"
 cask "font-hack-nerd-font"
 # What powerlevel10k's glyphs are drawn with
 cask "font-meslo-lg-nerd-font"
+
+# --- AI CLIs: aliased in zsh/.zshrc ---
+# Terminal-based AI coding assistant
+cask "claude-code"
+# OpenAI's coding agent that runs in your terminal
+cask "codex"

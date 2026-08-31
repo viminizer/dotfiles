@@ -81,10 +81,6 @@ brew "watchman"
 brew "yasm"
 # Feature-rich command-line audio/video downloader
 brew "yt-dlp"
-# Terminal-based AI coding assistant
-cask "claude-code"
-# OpenAI's coding agent that runs in your terminal
-cask "codex"
 # Brings the power of Copilot coding agent directly to your terminal
 cask "copilot-cli"
 # Universal database tool and SQL client
