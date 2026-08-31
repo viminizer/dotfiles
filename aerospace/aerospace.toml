@@ -32,12 +32,16 @@ automatically-unhide-macos-hidden-apps = true
 preset = 'qwerty'
 
 # ===== Gaps =====
+# This machine is notched, so NSScreen.visibleFrame already excludes the 32pt
+# safe area - and keeps excluding it even with the menu bar hidden. outer.top
+# therefore only clears what hangs below that: sketchybar's y_offset(0) +
+# height(34) - 32 = 2, plus 6 so the 2px window border does not touch the bar.
 [gaps]
 inner.horizontal = 10
 inner.vertical = 10
 outer.left = 10
 outer.bottom = 10
-outer.top = 34
+outer.top = 8
 outer.right = 10
 
 # ===== Monitor Assignment =====
