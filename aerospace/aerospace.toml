@@ -39,10 +39,10 @@ preset = 'qwerty'
 [gaps]
 inner.horizontal = 10
 inner.vertical = 10
-outer.left = 10
-outer.bottom = 10
-outer.top = 8
-outer.right = 10
+outer.left = 2
+outer.bottom = 2
+outer.top = 6
+outer.right = 2
 
 # ===== Monitor Assignment =====
 # Workspaces 1-5: Main monitor | Workspaces 6-0: Secondary monitor (if present)
