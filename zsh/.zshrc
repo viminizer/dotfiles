@@ -31,19 +31,28 @@ else
 fi
 
 # -------------------------
+# Homebrew prefix
+# -------------------------
+# Apple Silicon puts brew in /opt/homebrew, Intel in /usr/local. Hardcoding
+# either one makes the plugins below silently not load on the other machine.
+# A directory test rather than `brew --prefix`, which would cost a subprocess
+# on every shell start.
+if [[ -d /opt/homebrew ]]; then
+  HOMEBREW_PREFIX=/opt/homebrew
+else
+  HOMEBREW_PREFIX=/usr/local
+fi
+export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH"
+
+# -------------------------
 # Plugins
 # -------------------------
 # Autosuggestions (fish-style, accept with Tab or →)
-source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 
 # zoxide (use 'cd' to jump to directories, e.g., 'cd proj')
 eval "$(zoxide init zsh --cmd cd 2>/dev/null)"
-
-# -------------------------
-# Homebrew
-# -------------------------
-export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 
 # -------------------------
 # Color / display
@@ -94,9 +103,12 @@ export PATH="$HOME/.local/bin:$HOME/.claude/local/bin:$PATH"
 # -------------------------
 # Powerlevel10k
 # -------------------------
-[ -f /usr/local/opt/powerlevel10k/share/powerlevel10k/powerlevel10k.zsh-theme ] && \
-  source /usr/local/opt/powerlevel10k/share/powerlevel10k/powerlevel10k.zsh-theme
-[ -f "$HOME/.p10k.zsh" ] && source "$HOME/.p10k.zsh"
+[ -f "$HOMEBREW_PREFIX/opt/powerlevel10k/share/powerlevel10k/powerlevel10k.zsh-theme" ] && \
+  source "$HOMEBREW_PREFIX/opt/powerlevel10k/share/powerlevel10k/powerlevel10k.zsh-theme"
+# Tracked in this repo, so a new machine gets this prompt instead of the setup
+# wizard. p10k rewrites whichever file it was sourced from, so `p10k configure`
+# edits the checkout directly.
+[ -f "$HOME/.config/zsh/.p10k.zsh" ] && source "$HOME/.config/zsh/.p10k.zsh"
 
 # -------------------------
 # Environment
