@@ -97,6 +97,21 @@ alias danger='claude --dangerously-skip-permissions'
 # 2>/dev/null so a machine without a 21 JDK gets an empty JAVA_HOME rather
 # than an error on every shell start.
 export JAVA_HOME=$(/usr/libexec/java_home -v 21 2>/dev/null)
+
+# Version string for the prompt's java segment. Read once here, from the JDK's
+# own release file, because `java -version` starts a JVM - about 200ms, which on
+# every prompt would undo the work this file does to stay fast. Pure zsh, no
+# fork. The path only carries the major version, the release file has all of it.
+P10K_JAVA_VERSION=""
+if [[ -r "$JAVA_HOME/release" ]]; then
+  while read -r _jline; do
+    if [[ $_jline == JAVA_VERSION=* ]]; then
+      P10K_JAVA_VERSION=${${_jline#JAVA_VERSION=}//\"/}
+      break
+    fi
+  done < "$JAVA_HOME/release"
+  unset _jline
+fi
 # -------------------------
 # Claude Code CLI
 # -------------------------
