@@ -37,8 +37,14 @@ else
   LABEL_COLOR="$FG"
 fi
 
-# The graph wants 0..1, and sh has no floating point, so awk does the divide.
-FRACTION="$(awk -v c="$CPU" 'BEGIN { printf "%.3f", c / 100 }')"
+# The graph wants 0..1, and sh has no floating point, so awk does the maths.
+#
+# Plotting c/100 linearly is technically right and useless to look at: this
+# machine idles at 1-9%, which is under 2px of a 22px pill, so the trace sits
+# flat on the bottom edge and reads as a broken graph. sqrt keeps 0 at 0 and
+# 100% at full height - nothing is clipped or misreported - while lifting the
+# low end where the readings actually live. 9% draws at 30% height instead of 9%.
+FRACTION="$(awk -v c="$CPU" 'BEGIN { printf "%.3f", sqrt(c / 100) }')"
 
 sketchybar --set "$NAME" \
   label="${CPU}%" \
