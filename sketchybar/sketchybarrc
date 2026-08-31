@@ -20,22 +20,53 @@ export RED=0xffff000f
 export YELLOW=0xffff000f
 export MAGENTA=0xffff000f
 
+# ===== Machine override: notch =====
+# The bar butts against the notch, which is a cutout rather than pixels, so it
+# is true 000000. The Argonaut bg role is 000001 - invisible as a difference,
+# but it is a seam if you go looking for one.
+#
+# This sits *below* the generated palette on purpose. apply.py rewrites that
+# block wholesale from the header down to MAGENTA, so an override above this
+# line would not survive the next theme change. Anything here does.
+#
+# Not a role override: DARK still tracks bg, so only the bar goes pure black.
+# Caveat: apply.py's other pass substitutes old role hexes everywhere, so if a
+# future theme ever assigns 000000 to a role, this line gets repainted with it.
+export BAR_COLOR=0xff000000
+
 ##### Bar Appearance #####
+# Every edge except the bottom is pushed off-screen, so the bar reads as part
+# of the display rather than a pill floating on it - the notch included.
+#
+#   y_offset -6, height 40 : bottom edge stays at 34, but the top edge and the
+#                            whole 6px corner arc sit above y=0. Clipping only
+#                            1px would slice the arc mid-curve and leave two
+#                            visible stubs.
+#   margin -7              : same trick sideways. 7 = corner_radius 6 + the 1px
+#                            border, so both bottom corners clear the edges too.
+#   padding 19             : the items are anchored to the bar, and the bar now
+#                            starts at -7. 19 puts the first one back at x=12,
+#                            where margin 10 + padding 2 used to leave it.
+#
+# What survives is a single horizontal rule under the bar, full width.
 sketchybar --bar \
   position=top \
-  height=34 \
+  height=40 \
   blur_radius=0 \
   color=$BAR_COLOR \
-  margin=10 \
+  margin=-7 \
   corner_radius=6 \
-  y_offset=0 \
-  padding_left=2 \
-  padding_right=2 \
+  y_offset=-6 \
+  padding_left=19 \
+  padding_right=19 \
   border_color=$GOLD \
   border_width=1
 
 ##### Changing Defaults #####
 default=(
+  # The bar grew 6px upward, so its centre moved up 3 and every item centred in
+  # it went with the notch instead of staying centred in the visible strip.
+  y_offset=-3
   padding_left=3
   padding_right=3
   icon.font="SF Pro:Bold:12.0"
@@ -102,7 +133,8 @@ sketchybar --add bracket workspaces '/space\..*/' \
   background.border_color=$ITEM_BG_COLOR \
   background.border_width=1 \
   background.corner_radius=6 \
-  background.height=30
+  background.height=30 \
+  y_offset=-3
 
 # Invisible item that owns every workspace update. It redraws all the space.*
 # items at once, so they never need scripts of their own. The poll is a safety
@@ -215,7 +247,8 @@ sketchybar --add graph cpu_graph right 56 \
   label.drawing=off \
   padding_left=2 \
   padding_right=6 \
-  background.height=22
+  background.height=22 \
+  y_offset=0
 
 # Swap in use. memswap.sh has been sitting in plugins/ unreferenced; it turns
 # red on its own once macOS starts swapping, which is worth seeing.
@@ -235,7 +268,8 @@ sketchybar --add bracket status clock volume battery wifi cpu cpu_graph memswap 
   background.drawing=on \
   background.color=$ITEM_BG_COLOR \
   background.corner_radius=6 \
-  background.height=28
+  background.height=28 \
+  y_offset=-3
 
 ##### Force all scripts to run the first time #####
 sketchybar --update
