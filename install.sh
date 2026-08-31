@@ -45,6 +45,14 @@ bash "$CONFIG_DIR/sketchybar/install.sh"
 # bordersrc is only read once the service runs, and nothing else starts it.
 brew services restart borders
 
+# --- wallpaper ---
+# Tracked here rather than left in ~/Downloads, which is where macOS had been
+# pointing at it. macOS stores only the path, so the file has to live somewhere
+# permanent. Not fatal if it fails: the first run on a new machine may trip the
+# Automation permission prompt for System Events.
+osascript -e 'tell application "System Events" to tell every desktop to set picture to "'"$CONFIG_DIR"'/wallpaper/dodge-challenger-srt-demon-4k.jpg"' \
+  || echo "could not set the wallpaper, allow System Events under Privacy > Automation and re-run"
+
 cat <<'MANUAL'
 
 done. two things no script can do for you:
