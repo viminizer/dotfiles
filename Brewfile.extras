@@ -1,0 +1,155 @@
+# Everything this machine has that the dotfiles do not need.
+# Nothing here is installed by install.sh. Pull them in when you want them:
+#
+#   brew bundle install --file=~/.config/Brewfile.extras
+#
+# Regenerate the pair by dumping to Brewfile.extras, then moving anything
+# a config file actually depends on up into Brewfile.
+
+tap "anomalyco/tap"
+tap "hudochenkov/sshpass", trusted: { formulae: ["sshpass"] }
+tap "reyamira/tap", "https://github.com/reyamira/homebrew-tap.git"
+tap "steipete/tap"
+tap "yakitrak/yakitrak"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.13"
+# Official Amazon AWS command-line interface
+brew "awscli"
+# Resource monitor. C++ version and continuation of bashtop and bpytop
+brew "btop"
+# Statistics utility to count lines of code
+brew "cloc"
+# Cloudflare Tunnel client (formerly Argo Tunnel)
+brew "cloudflared"
+# Cross-platform make
+brew "cmake"
+# Dependency manager for Cocoa projects
+brew "cocoapods"
+# Get a file from an HTTP, HTTPS or FTP server
+brew "curl"
+# Play, record, convert, and stream select audio and video codecs
+brew "ffmpeg"
+# Command-line outline and bitmap font editor/converter
+brew "fontforge"
+# Quickly rewrite git repository history
+brew "git-filter-repo"
+# Image processing tools collection
+brew "graphicsmagick"
+# Tools and libraries to manipulate images in select formats
+brew "imagemagick"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+# Modern load testing tool, using Go and JavaScript
+brew "k6"
+# Next-gen compiler infrastructure
+brew "llvm"
+# Java-based project management
+brew "maven"
+# Simple tool to make locally trusted development certificates
+brew "mkcert"
+# Implementation of the Vulkan graphics and compute API on top of Metal
+brew "molten-vk"
+# Open source relational database management system
+brew "mysql-client"
+# Libraries for security-enabled client and server applications
+brew "nss"
+# General-purpose speech recognition model
+brew "openai-whisper"
+# Package compiler and linker metadata toolkit
+brew "pkgconf"
+# PDF rendering library (based on the xpdf-3.0 code base)
+brew "poppler"
+# Generic machine emulator and virtualizer
+brew "qemu"
+# Terminal client for .http/.rest files with HTTP, GraphQL, and gRPC support
+brew "resterm"
+# Rust toolchain installer
+brew "rustup"
+# Substitute for classic 'make' tool with autoconf/automake functionality
+brew "scons"
+# 7-Zip is a file archiver with a high compression ratio
+brew "sevenzip"
+# Modernized, complete, self-contained TeX/LaTeX engine
+brew "tectonic"
+# Enables extra languages support for Tesseract
+brew "tesseract-lang"
+# Extraction utility for .zip compressed archives
+brew "unzip"
+# Watch files and take action when they change
+brew "watchman"
+# Modular BSD reimplementation of NASM
+brew "yasm"
+# Feature-rich command-line audio/video downloader
+brew "yt-dlp"
+# Terminal-based AI coding assistant
+cask "claude-code"
+# OpenAI's coding agent that runs in your terminal
+cask "codex"
+# Brings the power of Copilot coding agent directly to your terminal
+cask "copilot-cli"
+# Universal database tool and SQL client
+cask "dbeaver-community"
+# UI toolkit for building applications for mobile, web and desktop
+cask "flutter"
+cask "font-ubuntu-nerd-font"
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask "ghostty"
+# Terminal emulator as alternative to Apple's Terminal app
+cask "iterm2"
+# Collaboration platform for API development
+cask "postman"
+# Open-source code editor
+cask "visual-studio-code"
+# Multimedia player
+cask "vlc"
+# OpenJDK distribution from Azul
+cask "zulu@17"
+vscode "akamud.vscode-theme-onedark"
+vscode "be5invis.vscode-custom-css"
+vscode "bradlc.vscode-tailwindcss"
+vscode "brandonkirbyson.vscode-animations"
+vscode "dbaeumer.vscode-eslint"
+vscode "dsznajder.es7-react-js-snippets"
+vscode "editorconfig.editorconfig"
+vscode "ejeldes.one-dark-italic-theme"
+vscode "esbenp.prettier-vscode"
+vscode "fisheva.eva-theme"
+vscode "github.vscode-pull-request-github"
+vscode "hnw.vscode-auto-open-markdown-preview"
+vscode "infeng.vscode-react-typescript"
+vscode "mechatroner.rainbow-csv"
+vscode "mhutchie.git-graph"
+vscode "mohd-akram.vscode-html-format"
+vscode "ms-vscode-remote.remote-containers"
+vscode "ms-vscode.cmake-tools"
+vscode "ms-vscode.cpp-devtools"
+vscode "ms-vscode.cpptools"
+vscode "ms-vscode.cpptools-extension-pack"
+vscode "ms-vscode.cpptools-themes"
+vscode "pkief.material-icon-theme"
+vscode "ritwickdey.liveserver"
+vscode "rodrigovallades.es7-react-js-snippets"
+vscode "shd101wyy.markdown-preview-enhanced"
+vscode "tldraw-org.tldraw-vscode"
+vscode "tomoki1207.pdf"
+vscode "typescriptteam.native-preview"
+vscode "vscodevim.vim"
+vscode "yzhang.markdown-all-in-one"
+vscode "zhuangtongfa.material-theme"
+go "github.com/go-delve/delve/cmd/dlv"
+cargo "modelsdev"
+uv "posting"
+npm "@google/gemini-cli"
+npm "@mermaid-js/mermaid-cli"
+npm "@react-native-community/cli"
+npm "agent-browser"
+npm "context-mode"
+npm "corepack"
+npm "eas-cli"
+npm "generator-code"
+npm "openclaw"
+npm "opencode-ai"
+npm "pnpm"
+npm "uipro-cli"
+npm "yarn"
+npm "yo"

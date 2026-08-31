@@ -13,7 +13,10 @@ CONFIG_DIR="$HOME/.config"
 command -v brew >/dev/null || { echo "install homebrew first: https://brew.sh"; exit 1; }
 
 # --- packages ---
-# Regenerate with: brew bundle dump --file=Brewfile --force
+# Brewfile holds only what the tracked configs need. Everything else this
+# machine happened to have is in Brewfile.extras, which is deliberately not
+# installed here - pull it in by hand if you want it:
+#   brew bundle install --file=~/.config/Brewfile.extras
 brew bundle install --file="$CONFIG_DIR/Brewfile"
 
 # --- zsh ---
@@ -37,6 +40,10 @@ fi
 # --- sketchybar ---
 # Pulls the app icon font and registers the launchd service.
 bash "$CONFIG_DIR/sketchybar/install.sh"
+
+# --- borders ---
+# bordersrc is only read once the service runs, and nothing else starts it.
+brew services restart borders
 
 cat <<'MANUAL'
 
