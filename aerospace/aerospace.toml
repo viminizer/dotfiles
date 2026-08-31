@@ -47,20 +47,20 @@ preset = 'qwerty'
 # on the display's safe area - which is why this is per-monitor:
 #
 #   built-in : notched, so visibleFrame already drops the 32pt safe area, and
-#              keeps dropping it with the menu bar hidden. 34 - 32 = 2, plus 6
-#              so the window border does not touch the bar's border.
+#              keeps dropping it with the menu bar hidden. 34 - 32 = 2, plus 4
+#              so the 2px window border does not touch the bar's border.
 #   external : no notch, no safe area, so visibleFrame == frame and the whole
-#              34 has to come from here, plus the same 6.
+#              34 has to come from here, plus the same 4.
 #
 # Get this wrong on a display with no safe area and sketchybar looks like it
 # vanished: the bar is topmost=off, so a window laid out over it covers it.
 [gaps]
 inner.horizontal = 10
 inner.vertical = 10
-outer.left = 10
-outer.bottom = 10
-outer.top = [{ monitor.'built-in' = 8 }, 40]
-outer.right = 10
+outer.left = 2
+outer.bottom = 2
+outer.top = [{ monitor.'built-in' = 6 }, 38]
+outer.right = 2
 
 # ===== Monitor Assignment =====
 # Workspaces 1-5: Main monitor | Workspaces 6-0: Secondary monitor (if present)
