@@ -26,7 +26,7 @@ sketchybar --bar \
   height=28 \
   blur_radius=0 \
   color=$BAR_COLOR \
-  margin=4 \
+  margin=10 \
   corner_radius=6 \
   y_offset=4 \
   padding_left=2 \
