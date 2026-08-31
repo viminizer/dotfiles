@@ -80,3 +80,11 @@ cask "font-meslo-lg-nerd-font"
 cask "claude-code"
 # OpenAI's coding agent that runs in your terminal
 cask "codex"
+
+# --- java: zsh/.zshrc:97, nvim/lua/plugins/java.lua ---
+# .zshrc asks java_home for 21 specifically. It must be a cask, not the openjdk
+# formula: only casks install into /Library/JavaVirtualMachines, which is the
+# only place /usr/libexec/java_home looks.
+cask "zulu@21"
+# jdtls is tuned for multi-module Maven projects
+brew "maven"

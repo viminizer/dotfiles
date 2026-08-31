@@ -43,8 +43,6 @@ brew "jq"
 brew "k6"
 # Next-gen compiler infrastructure
 brew "llvm"
-# Java-based project management
-brew "maven"
 # Simple tool to make locally trusted development certificates
 brew "mkcert"
 # Implementation of the Vulkan graphics and compute API on top of Metal

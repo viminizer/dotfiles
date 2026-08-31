@@ -94,7 +94,9 @@ alias danger='claude --dangerously-skip-permissions'
 # -------------------------
 # Java
 # -------------------------
-export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+# 2>/dev/null so a machine without a 21 JDK gets an empty JAVA_HOME rather
+# than an error on every shell start.
+export JAVA_HOME=$(/usr/libexec/java_home -v 21 2>/dev/null)
 # -------------------------
 # Claude Code CLI
 # -------------------------
