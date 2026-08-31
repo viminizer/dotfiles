@@ -44,9 +44,12 @@ export BAR_COLOR=0xff000000
 #                            visible stubs.
 #   margin -7              : same trick sideways. 7 = corner_radius 6 + the 1px
 #                            border, so both bottom corners clear the edges too.
-#   padding 19             : the items are anchored to the bar, and the bar now
-#                            starts at -7. 19 puts the first one back at x=12,
-#                            where margin 10 + padding 2 used to leave it.
+#   padding 11             : the items are anchored to the bar, and the bar now
+#                            starts at -7, so this is what positions them on
+#                            screen. 11 lands the first at x=4 - the inner edge
+#                            of the window border, given aerospace outer.left 2
+#                            and a 2px border - so the pills line up with the
+#                            window content below rather than with its frame.
 #
 # What survives is a single horizontal rule under the bar, full width.
 sketchybar --bar \
@@ -57,8 +60,8 @@ sketchybar --bar \
   margin=-7 \
   corner_radius=6 \
   y_offset=-6 \
-  padding_left=19 \
-  padding_right=19 \
+  padding_left=11 \
+  padding_right=11 \
   border_color=$GOLD \
   border_width=1
 
