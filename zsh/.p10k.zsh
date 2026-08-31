@@ -42,15 +42,16 @@
   # automatically hidden when the input line reaches it. Right prompt above the
   # last prompt line gets hidden if it would overlap with left prompt.
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
-    # Trimmed from 47 to what this machine can actually show. p10k skips an
+    # Trimmed from 47 to what this machine can actually show. The node and java
+    # versions moved to the tmux status bar - see tmux/scripts/runtimes.sh. The
+    # java_version segment below is left defined but unused, so putting it back
+    # is a one-word edit. p10k skips an
     # inapplicable segment cheaply, so the other 40 cost nothing at runtime -
     # they just made this file unreadable. Re-add any of them by name; the full
     # list is in the p10k docs.
     status                  # exit code of the last command
     command_execution_time  # duration of the last command, once it is slow enough to care
     background_jobs         # presence of & jobs
-    node_version            # always on, see NODE_VERSION_PROJECT_ONLY below
-    java_version            # custom segment, defined near the bottom of this file
     kubecontext             # only with a context set
     aws                     # only with AWS_PROFILE set
     context                 # user@host, appears over ssh or as root - worth keeping

@@ -10,6 +10,12 @@
 
 setopt NO_BEEP
 
+# The tmux status bar is pinned to the top, so the first prompt in a new pane
+# lands immediately under it with nothing between them. p10k's
+# PROMPT_ADD_NEWLINE only spaces out prompts after the first, so it cannot help
+# here. One blank line, only inside tmux.
+[[ -n $TMUX ]] && print
+
 # -------------------------
 # History
 # -------------------------
