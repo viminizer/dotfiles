@@ -495,9 +495,14 @@
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND=0
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND=3
   # Show duration of the last command if takes at least this many seconds.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=3
+  # 0: always show, rather than only past the default 3 seconds. Seeing the
+  # duration of fast commands too is the point - it is how you notice one
+  # creeping from 0.2s to 2s before it becomes annoying enough to profile.
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=0
   # Show this many fractional digits. Zero means round to seconds.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=0
+  # Two decimals, because with the threshold at 0 most commands finish under a
+  # second and would otherwise all read the same '0s'.
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=2
   # Duration format: 1d 2h 3m 4s.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FORMAT='d h m s'
   # Custom icon.
