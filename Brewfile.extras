@@ -96,8 +96,6 @@ cask "postman"
 cask "visual-studio-code"
 # Multimedia player
 cask "vlc"
-# OpenJDK distribution from Azul
-cask "zulu@17"
 vscode "akamud.vscode-theme-onedark"
 vscode "be5invis.vscode-custom-css"
 vscode "bradlc.vscode-tailwindcss"

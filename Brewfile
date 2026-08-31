@@ -85,6 +85,10 @@ cask "codex"
 # .zshrc asks java_home for 21 specifically. It must be a cask, not the openjdk
 # formula: only casks install into /Library/JavaVirtualMachines, which is the
 # only place /usr/libexec/java_home looks.
-cask "zulu@21"
+#
+# Temurin over Zulu or Oracle: same JVM, but GPLv2+CE with no vendor terms that
+# can change, and it is what the eclipse-temurin images most CI and deploys run
+# on, so local matches prod.
+cask "temurin@21"
 # jdtls is tuned for multi-module Maven projects
 brew "maven"
