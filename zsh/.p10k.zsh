@@ -52,6 +52,7 @@
     status                  # exit code of the last command
     command_execution_time  # duration of the last command, once it is slow enough to care
     background_jobs         # presence of & jobs
+    git_worktree            # custom segment, only inside a linked worktree
     kubecontext             # only with a context set
     aws                     # only with AWS_PROFILE set
     context                 # user@host, appears over ssh or as root - worth keeping
@@ -1744,6 +1745,33 @@
     # and regular prompts.
     prompt_example
   }
+
+  # Linked git worktree indicator. From inside a worktree the prompt is
+  # otherwise identical to the main checkout - same branch segment, same looking
+  # path - which makes editing the wrong tree an easy and repeatable mistake.
+  #
+  # In a linked worktree .git is a file holding a gitdir: pointer; in the main
+  # checkout it is a directory. That one difference is the whole test.
+  #
+  # Walks up from $PWD rather than asking git, because a fork on every prompt is
+  # what this setup avoids everywhere else. It is a few stats, and it stops at
+  # the first .git either way. VCS_STATUS_WORKDIR would have saved even that,
+  # but p10k scopes the gitstatus variables to its own vcs segment - they read
+  # empty from here.
+  function prompt_git_worktree() {
+    local dir=$PWD
+    while [[ $dir != / && -n $dir ]]; do
+      if [[ -e $dir/.git ]]; then
+        [[ -f $dir/.git ]] && p10k segment -f 0 -b 214 -i '' -t 'worktree'
+        return
+      fi
+      dir=${dir:h}
+    done
+  }
+
+  # No instant_prompt_git_worktree on purpose: instant prompt runs before
+  # gitstatusd has answered, so VCS_STATUS_WORKDIR is empty and the segment
+  # would flicker in and out on every new shell.
 
   # Java version, from P10K_JAVA_VERSION which .zshrc computes once at startup.
   # Deliberately not calling `java -version` here: that starts a JVM, costs about
