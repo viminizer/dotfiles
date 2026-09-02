@@ -148,6 +148,12 @@ return {
       opts.settings = vim.tbl_deep_extend("force", opts.settings or {}, {
         java = {
           autobuild = { enabled = false },
+          -- jdtls otherwise writes a <filteredResources> block into every
+          -- .project it imports. This repo commits its Eclipse metadata, so
+          -- that shows up as ~17 modified files on every import. The two
+          -- defaults (node_modules, \.git) are already covered by
+          -- import.exclusions below, so emptying this loses nothing.
+          project = { resourceFilters = {} },
           maxConcurrentBuilds = 1,
           import = {
             exclusions = {
