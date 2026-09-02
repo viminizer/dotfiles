@@ -45,6 +45,24 @@ bash "$CONFIG_DIR/sketchybar/install.sh"
 # bordersrc is only read once the service runs, and nothing else starts it.
 brew services restart borders
 
+# --- keyboard ---
+# Key repeat, in 15ms units. macOS ships 25/6 -- a 375ms wait and then 90ms a
+# step, or about 11 lines a second, which is slow enough that holding j in vim
+# feels broken rather than fast. 12/2 is 180ms then 30ms, about 33 a second.
+#
+# 2 is below what the System Settings slider can reach, so this cannot be done
+# in the UI and does not survive as a slider position. Read back with
+# `defaults read -g KeyRepeat`. Applications pick the value up when they next
+# launch, so the shell you run this from keeps the old rate until restarted.
+#
+# 1 (15ms, ~66 a second) is the floor and overshoots: you aim for a line and
+# land four past it. Note that the rate this *feels* like depends on kitty's
+# cursor_trail -- with the trail firing on held keys, 2 felt sluggish and 1
+# felt right, and both were the animation rather than the rate. Fix the trail
+# before reaching for a faster repeat; see kitty/kitty.conf.
+defaults write -g KeyRepeat -int 2
+defaults write -g InitialKeyRepeat -int 12
+
 # --- wallpaper ---
 # Tracked here rather than left in ~/Downloads, which is where macOS had been
 # pointing at it. macOS stores only the path, so the file has to live somewhere
