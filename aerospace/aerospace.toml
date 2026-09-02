@@ -41,8 +41,8 @@ automatically-unhide-macos-hidden-apps = true
 preset = 'qwerty'
 
 # ===== Gaps =====
-# outer.top has to clear sketchybar, whose bottom edge sits at y_offset(0) +
-# height(34) = 34 measured from the top of the *physical* screen. AeroSpace
+# outer.top has to clear sketchybar, whose bottom edge sits at y_offset(-6) +
+# height(40) = 34 measured from the top of the *physical* screen. AeroSpace
 # lays out inside visibleFrame, so how much of that 34 is left to clear depends
 # on the display's safe area - which is why this is per-monitor:
 #
