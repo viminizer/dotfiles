@@ -60,8 +60,10 @@ BORDER_SLOT = "color1"
 # that mattered. Hue and saturation are held, so a theme keeps its tint.
 BG_LUMA = 0.0
 
-# Minimum contrast for dimmed text against the surface it sits on: inactive tmux
-# window tabs, inactive kitty tabs, the swap icon in the bar.
+# Minimum contrast for dimmed text against the surface it sits on: inactive
+# kitty tabs, the swap icon in the bar, tmux's status-bar separators. tmux's
+# inactive window tabs used to be on this list and now follow TAB_MIX below,
+# because they are the only ones carrying a word you have to read.
 #
 # Off, because raising it costs more than it buys. At 5.0 the dimmed text stops
 # being dim: it lands close enough to the plain text that the two stop
@@ -69,6 +71,18 @@ BG_LUMA = 0.0
 # doing real work here even when the raw ratio looks alarming. Try 3.0 for a
 # middle ground rather than going back to 5.0.
 MUTED_FLOOR = 0.0
+# tmux's inactive window tabs, as a fraction of the way from the muted grey to
+# the theme's foreground. A mix rather than a contrast floor, because these are
+# not trying to be dim at all: the active tab is a filled accent pill, so the
+# background alone already says which window is current, and the text is then
+# free to be legible instead of doing a second job badly. Argonaut went from
+# #444444 (1.63:1, unreadable) to #a29f9c (6.04:1).
+#
+# Blended toward the theme's foreground, not toward pure white, so it keeps the
+# palette's tint -- Argonaut's fg is a warm #fffaf3, and mixing to #ffffff
+# instead drops a cold grey into a warm bar. 1.0 would be the foreground
+# itself; stay below it so the tabs still read as one step back from body text.
+TAB_MIX = 0.5
 # How light the text may be pushed while solving for it. The text is moved
 # first, since it has more headroom than the background has room to darken.
 FG_CEILING = 0.93
@@ -276,6 +290,10 @@ def roles_from(c):
     if not surface or luma(surface) <= luma(bg):
         surface = blend(bg, fg, 0.12)
 
+    muted = raise_to(
+        lift(c["color8"]) if c.get("color8") else blend(fg, bg, 0.45),
+        surface, MUTED_FLOOR)
+
     return {
         "bg": bg,
         "surface": surface,
@@ -289,9 +307,10 @@ def roles_from(c):
         "accent_bright": relight(accent, 0.82),
         "fg": fg,
         "fg_alt": fg,
-        "muted": raise_to(
-            lift(c["color8"]) if c.get("color8") else blend(fg, bg, 0.45),
-            surface, MUTED_FLOOR),
+        "muted": muted,
+        # Same grey, mixed toward the foreground until it is comfortably
+        # readable. Only tmux's inactive window tabs use it; see TAB_MIX.
+        "muted_strong": blend(muted, fg, TAB_MIX),
         # The warm accent carries the bar outline, the active window border and
         # the clock. Every theme ships one as color3, so take it directly.
         "gold": yellow,
