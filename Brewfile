@@ -92,3 +92,19 @@ cask "codex"
 cask "temurin@21"
 # jdtls is tuned for multi-module Maven projects
 brew "maven"
+
+# --- go: nvim/lua/plugins/lsp.lua ---
+# Not for writing Go so much as for getting the server at all: mason has no
+# prebuilt gopls, it installs one by running `go install`. Without this, every
+# start reports "failed to install gopls" and the entry in lsp.lua does nothing.
+brew "go"
+
+# --- kotlin: nvim/lua/plugins/kotlin.lua ---
+# Kotlin's build tool in practice -- kotlin_lsp's root markers are all Gradle
+# files bar pom.xml, and it reads the classpath out of the Gradle build. Most
+# repos ship a ./gradlew wrapper, so this is really for `gradle init` and for
+# checkouts that do not.
+brew "gradle"
+# kotlinc, for a .kt file with no build around it. The language server needs a
+# project root, so a scratch file only compiles and runs through this.
+brew "kotlin"
