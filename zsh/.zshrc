@@ -190,3 +190,14 @@ alias lg='lazygit'
 # -------------------------
 # Codex with no approval prompts and no sandbox (mirrors `danger` for Claude).
 alias dangerx='codex --dangerously-bypass-approvals-and-sandbox'
+
+# -------------------------
+# asdf
+# -------------------------
+# asdf 0.16+ is the Go rewrite: no asdf.sh to source, just put the shims on PATH.
+# Placed last on purpose so it wins over the nvm default above. Projects with a
+# .tool-versions file (e.g. kop-api pins nodejs 16.8.0) switch automatically;
+# everywhere else ~/.tool-versions pins "system", which sends the shim on to
+# nvm's default node. Without that global entry the shim errors out instead of
+# falling through, so node breaks outside asdf-managed projects.
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
