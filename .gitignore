@@ -12,6 +12,8 @@
 /opencode
 /iterm2
 /jgit
+# npm's configstore -- update-check timestamps written by nodemon and friends
+/configstore
 
 # --- Configs I don't track ---
 /btop
