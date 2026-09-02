@@ -1,5 +1,14 @@
 # AeroSpace Config
 
+config-version = 2
+
+# Under config-version 1 this list was inferred from the right hand side of the
+# keybindings; under 2 an omitted list means "none". The bindings below still
+# name 1-0, but sketchybar reads the workspace list rather than the bindings, so
+# without this the empty ones vanish from the bar the moment they lose their
+# last window.
+persistent-workspaces = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+
 # ===== Startup =====
 start-at-login = true
 after-login-command = []
