@@ -78,6 +78,8 @@ cask "kitty"
 # Named in sketchybarrc
 cask "font-sf-pro"
 cask "font-hack-nerd-font"
+# kitty's font
+cask "font-maple-mono-nf"
 # What powerlevel10k's glyphs are drawn with
 cask "font-meslo-lg-nerd-font"
 
