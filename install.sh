@@ -51,12 +51,18 @@ brew services restart borders
 # pasteboard, so a copy in either place shows up in both.
 #
 # clipse is not packaged for Homebrew, so it gets built. GOBIN aims it at
-# ~/.local/bin because .zshrc already has that on PATH and ~/go/bin does not;
-# tmux's popup has to be able to find the binary.
+# ~/.local/bin, which .zshrc has on PATH, rather than the ~/go/bin default,
+# which it does not. That only fixes the interactive shell -- the tmux popup
+# calls the binary by its full path, because the tmux server never sees this
+# PATH at all. See the binding in tmux/tmux.conf.
 GOBIN="$HOME/.local/bin" go install github.com/savedra1/clipse@latest
 
 # clipse only records what is copied while its listener is running, and nothing
 # else starts it -- same problem borders has, same fix.
+#
+# -listen-darwin, not the --listen-shell the upstream plist example uses:
+# clipse ships a separate listener per platform and that example is the generic
+# one. Both appear to work here, but only one of them is about this OS.
 CLIPSE_PLIST="$HOME/Library/LaunchAgents/com.savedra1.clipse.plist"
 mkdir -p "$HOME/Library/LaunchAgents"
 cat > "$CLIPSE_PLIST" <<PLIST
@@ -69,7 +75,7 @@ cat > "$CLIPSE_PLIST" <<PLIST
     <key>ProgramArguments</key>
     <array>
         <string>$HOME/.local/bin/clipse</string>
-        <string>--listen-shell</string>
+        <string>-listen-darwin</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
