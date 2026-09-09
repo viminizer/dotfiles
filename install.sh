@@ -57,6 +57,58 @@ brew services restart borders
 # PATH at all. See the binding in tmux/tmux.conf.
 GOBIN="$HOME/.local/bin" go install github.com/savedra1/clipse@latest
 
+# Maccy is sandboxed, so its settings are not a file this repo can track --
+# they live in the defaults domain, which redirects into its container. Written
+# with Maccy stopped, because cfprefsd writes the running app's in-memory copy
+# back out on quit and would undo this.
+#
+# The bundle ids mirror clipse's excludedApps, so the two histories skip the
+# same things. Only kitty's was verifiable here -- ignoredApps was confirmed by
+# copying with kitty listed (not recorded) and again without it (recorded).
+# The password managers are not installed on this machine, so check any that
+# ever matter with: osascript -e 'id of app "1Password"'
+#
+# No history-size line: Maccy 2.7.1 has a `size` default, but setting it to 5
+# and copying ten things left all ten in its store, restart included. Whatever
+# that key is, it is not a cap, and a setting that does nothing is worse here
+# than no setting.
+osascript -e 'quit app "Maccy"' 2>/dev/null || true
+sleep 1
+defaults write org.p0deje.Maccy ignoredApps -array \
+  "com.1password.1password" \
+  "com.bitwarden.desktop" \
+  "org.keepassxc.keepassxc" \
+  "com.lastpass.LastPass" \
+  "com.apple.keychainaccess"
+
+# Maccy's own "start at login" is SMAppService, which registers in a system
+# database rather than a preference, so there is nothing to `defaults write`.
+# A launch agent gets there by a different road. If you ever tick the toggle in
+# Maccy too, nothing breaks: it is single-instance, the second launch just
+# focuses the first.
+mkdir -p "$HOME/Library/LaunchAgents"
+MACCY_PLIST="$HOME/Library/LaunchAgents/com.dotfiles.maccy.plist"
+cat > "$MACCY_PLIST" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.dotfiles.maccy</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/open</string>
+        <string>-a</string>
+        <string>/Applications/Maccy.app</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+PLIST
+launchctl bootout "gui/$(id -u)/com.dotfiles.maccy" 2>/dev/null || true
+launchctl bootstrap "gui/$(id -u)" "$MACCY_PLIST"
+
 # clipse reads its config from ~/Library/Application Support on macOS, not from
 # here, despite what its README says about XDG. Link rather than copy so the
 # tracked file is the live one -- clipse only reads config.json, it never
@@ -73,7 +125,6 @@ ln -sfn "$CONFIG_DIR/clipse/config.json" \
 # "Killing pid <n>" and clipboard history silently stops recording until the
 # agent is restarted. --listen-shell survives being opened. Verified both ways.
 CLIPSE_PLIST="$HOME/Library/LaunchAgents/com.savedra1.clipse.plist"
-mkdir -p "$HOME/Library/LaunchAgents"
 cat > "$CLIPSE_PLIST" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
