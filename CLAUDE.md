@@ -4,8 +4,10 @@ This repo **is** `~/.config`. It is cloned there, not symlinked into it — most
 tools read `~/.config/<tool>` directly, so putting the checkout in the right
 place is most of the install. `install.sh` covers the rest and is safe to re-run.
 
-The one exception is zsh, which only ever reads `~/.zshrc`; `install.sh` links
-that at the tracked copy.
+Two things read from elsewhere and are symlinked back here by `install.sh`:
+zsh, which only ever reads `~/.zshrc`, and clipse, which on macOS reads
+`~/Library/Application Support/clipse/config.json` whatever its README says
+about XDG.
 
 ## Branches
 

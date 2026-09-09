@@ -57,12 +57,21 @@ brew services restart borders
 # PATH at all. See the binding in tmux/tmux.conf.
 GOBIN="$HOME/.local/bin" go install github.com/savedra1/clipse@latest
 
+# clipse reads its config from ~/Library/Application Support on macOS, not from
+# here, despite what its README says about XDG. Link rather than copy so the
+# tracked file is the live one -- clipse only reads config.json, it never
+# rewrites it, so nothing is lost by pointing it at the repo.
+mkdir -p "$HOME/Library/Application Support/clipse"
+ln -sfn "$CONFIG_DIR/clipse/config.json" \
+  "$HOME/Library/Application Support/clipse/config.json"
+
 # clipse only records what is copied while its listener is running, and nothing
 # else starts it -- same problem borders has, same fix.
 #
-# -listen-darwin, not the --listen-shell the upstream plist example uses:
-# clipse ships a separate listener per platform and that example is the generic
-# one. Both appear to work here, but only one of them is about this OS.
+# --listen-shell, not the -listen-darwin that clipse -help offers for exactly
+# this OS. Opening the TUI kills a -listen-darwin listener -- clipse logs
+# "Killing pid <n>" and clipboard history silently stops recording until the
+# agent is restarted. --listen-shell survives being opened. Verified both ways.
 CLIPSE_PLIST="$HOME/Library/LaunchAgents/com.savedra1.clipse.plist"
 mkdir -p "$HOME/Library/LaunchAgents"
 cat > "$CLIPSE_PLIST" <<PLIST
@@ -75,7 +84,7 @@ cat > "$CLIPSE_PLIST" <<PLIST
     <key>ProgramArguments</key>
     <array>
         <string>$HOME/.local/bin/clipse</string>
-        <string>-listen-darwin</string>
+        <string>--listen-shell</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
