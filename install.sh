@@ -45,6 +45,48 @@ bash "$CONFIG_DIR/sketchybar/install.sh"
 # bordersrc is only read once the service runs, and nothing else starts it.
 brew services restart borders
 
+# --- clipboard ---
+# Two halves of one setup: Maccy in the menu bar (from the Brewfile) and clipse
+# in the terminal. They never talk to each other -- both poll the system
+# pasteboard, so a copy in either place shows up in both.
+#
+# clipse is not packaged for Homebrew, so it gets built. GOBIN aims it at
+# ~/.local/bin because .zshrc already has that on PATH and ~/go/bin does not;
+# tmux's popup has to be able to find the binary.
+GOBIN="$HOME/.local/bin" go install github.com/savedra1/clipse@latest
+
+# clipse only records what is copied while its listener is running, and nothing
+# else starts it -- same problem borders has, same fix.
+CLIPSE_PLIST="$HOME/Library/LaunchAgents/com.savedra1.clipse.plist"
+mkdir -p "$HOME/Library/LaunchAgents"
+cat > "$CLIPSE_PLIST" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.savedra1.clipse</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>$HOME/.local/bin/clipse</string>
+        <string>--listen-shell</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+PLIST
+
+# bootstrap errors out if the agent is already loaded, which it will be on every
+# re-run, so unload first and ignore the failure on a first run.
+#
+# The very first bootstrap on a machine only lays down clipse's config and
+# records nothing -- copies made in that window are lost. The bootout above
+# means a second run of this script fixes it, which is why this is worth
+# knowing but not worth working around.
+launchctl bootout "gui/$(id -u)/com.savedra1.clipse" 2>/dev/null || true
+launchctl bootstrap "gui/$(id -u)" "$CLIPSE_PLIST"
+
 # --- keyboard ---
 # Key repeat, in 15ms units. macOS ships 25/6 -- a 375ms wait and then 90ms a
 # step, or about 11 lines a second, which is slow enough that holding j in vim
