@@ -103,6 +103,14 @@ run = 'layout floating'
 if.app-id = 'ru.keepcoder.Telegram'
 run = 'layout floating'
 
+# Maccy's history is a popup, not a window you work in -- tiled it would shove
+# the real windows aside every time you paste. The id is from Maccy 2.7.1; a
+# wrong one fails silently as no rule at all, so check `aerospace list-apps`
+# rather than the window if this ever stops working.
+[[on-window-detected]]
+if.app-id = 'org.p0deje.Maccy'
+run = 'layout floating'
+
 # Auto-assign apps to workspaces
 # [[on-window-detected]]
 # if.app-id = 'com.apple.Safari'

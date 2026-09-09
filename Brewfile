@@ -66,6 +66,12 @@ cask "aerospace"
 # Keyboard customiser
 cask "karabiner-elements"
 
+# --- clipboard: aerospace/aerospace.toml, tmux/tmux.conf ---
+# Menu bar half of the clipboard setup. The terminal half is clipse, which is
+# not in Homebrew -- install.sh go-installs it. Both poll the same system
+# pasteboard, so they see the same copies without talking to each other.
+cask "maccy"
+
 # --- terminal + fonts ---
 # GPU-based terminal emulator
 cask "kitty"
