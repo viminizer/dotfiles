@@ -41,25 +41,16 @@ automatically-unhide-macos-hidden-apps = true
 preset = 'qwerty'
 
 # ===== Gaps =====
-# outer.top has to clear sketchybar, whose bottom edge sits at y_offset(4) +
-# height(28) = 32 measured from the top of the *physical* screen. AeroSpace
-# lays out inside visibleFrame, so how much of that 32 is left to clear depends
-# on the display's safe area - which is why this is per-monitor:
-#
-#   built-in : on a notched Mac visibleFrame already drops the 32pt safe area,
-#              and keeps dropping it with the menu bar hidden. Nothing of the
-#              bar is left below it, so this is only the 2px window border.
-#   external : no notch, no safe area, so visibleFrame == frame and the whole
-#              32 has to come from here, plus the same 2.
-#
-# Get this wrong on a display with no safe area and sketchybar looks like it
-# vanished: the bar is topmost=off, so a window laid out over it covers it.
+# outer.top clears sketchybar: y_offset(4) + height(28) = 32, plus 2 for the
+# window border. That holds on any display without a notch, where visibleFrame
+# starts at the physical top. Not every built-in display is notched, so a notched
+# machine sets its own value on its machine branch.
 [gaps]
 inner.horizontal = 10
 inner.vertical = 10
 outer.left = 10
 outer.bottom = 10
-outer.top = [{ monitor.'built-in' = 2 }, 34]
+outer.top = 34
 outer.right = 10
 
 # ===== Monitor Assignment =====
