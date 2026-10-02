@@ -156,7 +156,10 @@ launchctl bootstrap "gui/$(id -u)" "$CLIPSE_PLIST"
 # --- keyboard ---
 # Key repeat, in 15ms units. macOS ships 25/6 -- a 375ms wait and then 90ms a
 # step, or about 11 lines a second, which is slow enough that holding j in vim
-# feels broken rather than fast. 12/3 is 180ms then 45ms, about 22 a second.
+# feels broken rather than fast. 17/3 is 255ms then 45ms, about 22 a second.
+#
+# The wait was 12 (180ms) before. The target is 250ms, and 17 is the nearest
+# 15ms step to it.
 #
 # 2 (30ms, ~33 a second) was used for a while and turned out too fast. Read
 # back with `defaults read -g KeyRepeat`. Applications pick the value up when
@@ -169,7 +172,7 @@ launchctl bootstrap "gui/$(id -u)" "$CLIPSE_PLIST"
 # felt right, and both were the animation rather than the rate. Fix the trail
 # before reaching for a faster repeat; see kitty/kitty.conf.
 defaults write -g KeyRepeat -int 3
-defaults write -g InitialKeyRepeat -int 12
+defaults write -g InitialKeyRepeat -int 17
 
 # --- wallpaper ---
 # Tracked here rather than left in ~/Downloads, which is where macOS had been
