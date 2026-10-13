@@ -132,9 +132,37 @@ return {
         "--jvm-arg=-XX:ActiveProcessorCount=4",
       })
 
-      -- Scanning 435 modules for main classes on every attach, to populate debug
-      -- configurations that are never used. The test runner does not need it.
+      -- Keep main-class discovery opt-in for large projects. The test runner
+      -- does not need it. The toggle lasts until Neovim exits.
       opts.dap_main = false
+      local on_attach = opts.on_attach
+      opts.on_attach = function(args)
+        if on_attach then
+          on_attach(args)
+        end
+        local dap = require("dap")
+        -- Recent jdtls also discovers classes via a DAP configuration provider
+        -- on continue(), independently of LazyVim's dap_main option.
+        if not opts.dap_main and dap.providers and dap.providers.configs then
+          dap.providers.configs.jdtls = nil
+        end
+        vim.keymap.set("n", "<leader>dm", function()
+          if not opts.dap_main then
+            if not dap.adapters.java then
+              vim.notify("Java debug adapter is not available", vim.log.levels.WARN)
+              return
+            end
+            opts.dap_main = { verbose = true }
+            require("jdtls.dap").setup_dap_main_class_configs(opts.dap_main)
+          else
+            opts.dap_main = false
+            if dap.providers and dap.providers.configs then
+              dap.providers.configs.jdtls = nil
+            end
+            vim.notify("Java main-class discovery disabled (existing configurations kept)")
+          end
+        end, { buffer = args.buf, desc = "Toggle Java Main Class Discovery" })
+      end
 
       -- nvim otherwise kills the server the instant it sends shutdown, so jdtls
       -- dies mid-write and logs failed index saves every time. This costs the
