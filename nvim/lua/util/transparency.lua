@@ -6,6 +6,8 @@ function M.apply()
     highlight NeoTreeNormalNC guibg=none ctermbg=none
     highlight NeoTreeEndOfBuffer guibg=none ctermbg=none
     highlight NeoTreeWinSeparator guifg=#ff000f guibg=none
+    highlight WinSeparator guifg=#ff000f guibg=none ctermfg=red ctermbg=none
+    highlight DapUIFloatBorder guifg=#ff000f guibg=none ctermfg=red ctermbg=none
     highlight NeoTreeFloatNormal guibg=none ctermbg=none
     highlight NeoTreeFloatBorder guifg=#ff000f guibg=none
     highlight NeoTreeFloatTitle guifg=#ff000f guibg=none
