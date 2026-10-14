@@ -1,18 +1,20 @@
 -- Options are automatically loaded before lazy.nvim startup
 
 -- Root detection, used by every picker, the explorer and the root-dir terminal.
--- Always the folder nvim was launched in - never a parent, never $HOME.
+-- Start with the folder nvim was launched in; explicit worktree switches
+-- select a new root. Never walk upward to a parent or $HOME.
 --
 -- LazyVim's default spec walks *upward* from the current file for markers like
 -- .git or lua, so opening a file in a non-git project (or the dashboard, which
 -- has no file at all) would land on some ancestor and search far too much. The
 -- ~/lua symlink made that ancestor $HOME. Reading the cwd once, here, pins it:
 -- this file runs before lazy.nvim starts, so it is the launch directory, and a
--- later :cd or a buffer from another project can't move it.
+-- later :cd or a buffer from another project can't move it. An explicit
+-- worktree switch updates worktree_root so searches follow that selection.
 local launch_dir = vim.fn.getcwd()
 vim.g.root_spec = {
   function()
-    return launch_dir
+    return vim.g.worktree_root or launch_dir
   end,
 }
 
