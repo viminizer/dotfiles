@@ -29,6 +29,9 @@ return {
       },
     },
     picker = {
+      -- Explicitly prune dependencies, including in projects without .gitignore
+      -- and when the picker is toggled to show ignored files.
+      exclude = { "node_modules", "**/node_modules/**" },
       layout = {
         backdrop = false,
       },
