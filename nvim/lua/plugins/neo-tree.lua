@@ -25,6 +25,10 @@ return {
     popup_border_style = "rounded",
     filesystem = {
       group_empty_dirs = true,
+      filtered_items = {
+        -- Keep dependencies hidden even when showing other hidden/ignored files.
+        never_show = { "node_modules" },
+      },
     },
     window = {
       popup = {
