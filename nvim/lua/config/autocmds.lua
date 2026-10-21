@@ -26,6 +26,22 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   end,
 })
 
+-- Keep informal scratch notes quiet without changing Markdown in projects.
+local scratchpad = vim.fn.expand("~/notes/scratch.md")
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile", "BufEnter" }, {
+  group = vim.api.nvim_create_augroup("QuietScratchpad", { clear = true }),
+  pattern = scratchpad,
+  callback = function(args)
+    vim.diagnostic.enable(false, { bufnr = args.buf })
+  end,
+})
+-- LazyVim may load this file after the initial buffer's read/enter events.
+for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+  if vim.api.nvim_buf_get_name(buf) == scratchpad then
+    vim.diagnostic.enable(false, { bufnr = buf })
+  end
+end
+
 -- Hard-wrap prose only. A global textwidth breaks code comments mid-line,
 -- because nvim's default formatoptions includes `t` and `c`.
 vim.api.nvim_create_autocmd("FileType", {
