@@ -133,7 +133,7 @@ return {
       })
 
       -- Keep main-class discovery opt-in for large projects. The test runner
-      -- does not need it. The toggle lasts until Neovim exits.
+      -- does not need it. Refresh launch configurations manually with <leader>dm.
       opts.dap_main = false
       local on_attach = opts.on_attach
       opts.on_attach = function(args)
@@ -147,21 +147,12 @@ return {
           dap.providers.configs.jdtls = nil
         end
         vim.keymap.set("n", "<leader>dm", function()
-          if not opts.dap_main then
-            if not dap.adapters.java then
-              vim.notify("Java debug adapter is not available", vim.log.levels.WARN)
-              return
-            end
-            opts.dap_main = { verbose = true }
-            require("jdtls.dap").setup_dap_main_class_configs(opts.dap_main)
-          else
-            opts.dap_main = false
-            if dap.providers and dap.providers.configs then
-              dap.providers.configs.jdtls = nil
-            end
-            vim.notify("Java main-class discovery disabled (existing configurations kept)")
+          if not dap.adapters.java then
+            vim.notify("Java debug adapter is not available", vim.log.levels.WARN)
+            return
           end
-        end, { buffer = args.buf, desc = "Toggle Java Main Class Discovery" })
+          require("jdtls.dap").setup_dap_main_class_configs({ verbose = true })
+        end, { buffer = args.buf, desc = "Refresh Java Launch Configurations" })
       end
 
       -- nvim otherwise kills the server the instant it sends shutdown, so jdtls
