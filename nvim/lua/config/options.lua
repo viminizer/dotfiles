@@ -24,6 +24,7 @@ vim.g.root_spec = {
 vim.g.lazyvim_prettier_needs_config = true
 
 -- Only options that differ from the LazyVim/nvim defaults belong here.
+vim.opt.relativenumber = false -- LazyVim enables relative line numbers
 vim.opt.breakindent = true
 vim.opt.wrap = true -- LazyVim disables wrap
 vim.opt.autowriteall = true -- LazyVim sets autowrite; this also writes on :bnext, :make, etc.
