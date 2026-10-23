@@ -112,8 +112,6 @@ function M.set(on)
   -- lualine indicator, so it has to be set before anything else runs.
   vim.g.teach_mode = on
 
-  vim.opt.relativenumber = not on
-  vim.opt.number = true
   -- A blinking block in insert mode. The daily `hor25` underline is nearly
   -- invisible once the video is scaled down. cursorline is left alone: LazyVim
   -- already has it on, so teach mode has nothing to add and turning it off on
