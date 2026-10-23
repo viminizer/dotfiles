@@ -17,6 +17,15 @@ local function compare_branch()
   local branches = vim.tbl_filter(function(branch)
     return not branch:match("/HEAD$")
   end, vim.split(result.stdout, "\n", { trimempty = true }))
+  -- The usual MR bases go first, so picking one is a single Enter.
+  local top = 0
+  for _, preferred in ipairs({ "origin/pre-release", "origin/main", "origin/master" }) do
+    local index = vim.fn.index(branches, preferred)
+    if index >= 0 then
+      top = top + 1
+      table.insert(branches, top, table.remove(branches, index + 1))
+    end
+  end
   vim.ui.select(branches, { prompt = "Compare HEAD against base branch:" }, function(base)
     if base then
       -- Three dots shows committed branch changes since the common ancestor,
