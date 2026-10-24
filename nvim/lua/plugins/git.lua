@@ -1,4 +1,4 @@
--- Diffview for reviewing a branch, plus a worktree switcher. Both pick from a
+-- codediff for reviewing a branch, plus a worktree switcher. Both pick from a
 -- list through vim.ui.select, which LazyVim routes to the snacks picker.
 local function git_lines(args)
   return vim.fn.systemlist(vim.list_extend({ "git" }, args))
@@ -6,8 +6,13 @@ end
 
 return {
   {
-    "sindrets/diffview.nvim",
-    cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+    "esmuellert/codediff.nvim",
+    cmd = "CodeDiff",
+    opts = {
+      -- One pane with deleted lines shown above the new ones, like GitHub,
+      -- instead of old and new files side by side.
+      diff = { layout = "inline" },
+    },
     keys = {
       {
         "<leader>gD",
@@ -17,27 +22,25 @@ return {
             return not b:match("/HEAD$")
           end, git_lines({ "branch", "-a", "--format=%(refname:lstrip=2)" }))
           vim.ui.select(branches, { prompt = "Base branch" }, function(base)
-            -- Triple-dot diffs from where this branch forked, so commits that
-            -- landed on base since then do not show up as changes here.
-            -- --imply-local puts real files on the right, so uncommitted work
-            -- shows and LSP still works. -C pins it to the cwd: diffview
-            -- otherwise uses the current buffer's repo, which after <leader>gw
-            -- is still the old worktree, and the diff comes up empty.
+            -- "base..." diffs the working tree against where this branch forked,
+            -- so uncommitted work shows and commits that landed on base since
+            -- do not. -C pins it to the cwd: otherwise it uses the current
+            -- buffer's repo, which after <leader>gw is still the old worktree,
+            -- and the diff comes up empty.
             if base then
               local cwd = vim.fn.fnameescape(vim.fn.getcwd())
-              vim.cmd("DiffviewOpen -C" .. cwd .. " " .. base .. "...HEAD --imply-local")
+              vim.cmd("CodeDiff -C " .. cwd .. " " .. base .. "...")
             end
           end)
         end,
         desc = "Diff against base branch",
       },
-      { "<leader>gq", "<cmd>DiffviewClose<cr>", desc = "Close diffview" },
     },
   },
   {
     "folke/snacks.nvim",
     keys = {
-      -- LazyVim's snacks extra binds this to a diff picker; diffview owns it.
+      -- LazyVim's snacks extra binds this to a diff picker; codediff owns it.
       { "<leader>gD", false },
       {
         "<leader>gw",
