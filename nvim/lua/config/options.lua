@@ -29,6 +29,7 @@ vim.opt.softtabstop = 2
 vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:hor25,r-cr-o:hor20"
 vim.opt.inccommand = "split" -- LazyVim uses "nosplit"
 vim.opt.scrolloff = 8 -- LazyVim uses 4
+vim.opt.relativenumber = false -- LazyVim turns it on
 vim.opt.concealcursor = "nc"
 vim.opt.updatetime = 500 -- CursorHold delay; below ~500 the CursorHold autocmds below poll too hard
 -- textwidth is set per-filetype in config/autocmds.lua, not globally.
