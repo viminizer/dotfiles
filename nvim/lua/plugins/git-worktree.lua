@@ -31,11 +31,11 @@ return {
   end,
   keys = {
     {
-      "<leader>gw",
+      "<leader>gT",
       function()
         require("telescope").extensions.git_worktree.git_worktree()
       end,
-      desc = "Switch Git Worktree",
+      desc = "Switch Git Worktree (Telescope)",
     },
   },
 }
