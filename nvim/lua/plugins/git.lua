@@ -4,6 +4,42 @@ local function git_lines(args)
   return vim.fn.systemlist(vim.list_extend({ "git" }, args))
 end
 
+local function pick_worktree(on_pick)
+  local paths = {}
+  for _, line in ipairs(git_lines({ "worktree", "list", "--porcelain" })) do
+    local path = line:match("^worktree (.+)")
+    if path then
+      table.insert(paths, path)
+    end
+  end
+  vim.ui.select(paths, {
+    prompt = "Worktree",
+    format_item = function(p)
+      return vim.fn.fnamemodify(p, ":~")
+    end,
+  }, function(path)
+    if path then
+      on_pick(path)
+    end
+  end)
+end
+
+local function diff_against_base(dir)
+  -- origin/HEAD is an alias for another branch, so it only adds noise.
+  local branches = vim.tbl_filter(function(b)
+    return not b:match("/HEAD$")
+  end, git_lines({ "-C", dir, "branch", "-a", "--format=%(refname:lstrip=2)" }))
+  vim.ui.select(branches, { prompt = "Base branch" }, function(base)
+    -- "base..." diffs the working tree against where this branch forked, so
+    -- uncommitted work shows and commits that landed on base since do not.
+    -- -C pins it to dir: otherwise it uses the current buffer's repo, which
+    -- after <leader>gw is still the old worktree, and the diff comes up empty.
+    if base then
+      vim.cmd("CodeDiff -C " .. vim.fn.fnameescape(dir) .. " " .. base .. "...")
+    end
+  end)
+end
+
 return {
   {
     "esmuellert/codediff.nvim",
@@ -99,23 +135,16 @@ return {
       {
         "<leader>gD",
         function()
-          -- origin/HEAD is an alias for another branch, so it only adds noise.
-          local branches = vim.tbl_filter(function(b)
-            return not b:match("/HEAD$")
-          end, git_lines({ "branch", "-a", "--format=%(refname:lstrip=2)" }))
-          vim.ui.select(branches, { prompt = "Base branch" }, function(base)
-            -- "base..." diffs the working tree against where this branch forked,
-            -- so uncommitted work shows and commits that landed on base since
-            -- do not. -C pins it to the cwd: otherwise it uses the current
-            -- buffer's repo, which after <leader>gw is still the old worktree,
-            -- and the diff comes up empty.
-            if base then
-              local cwd = vim.fn.fnameescape(vim.fn.getcwd())
-              vim.cmd("CodeDiff -C " .. cwd .. " " .. base .. "...")
-            end
-          end)
+          diff_against_base(vim.fn.getcwd())
         end,
         desc = "Diff against base branch",
+      },
+      {
+        "<leader>gW",
+        function()
+          pick_worktree(diff_against_base)
+        end,
+        desc = "Diff a worktree against base branch",
       },
     },
   },
@@ -127,23 +156,9 @@ return {
       {
         "<leader>gw",
         function()
-          local paths = {}
-          for _, line in ipairs(git_lines({ "worktree", "list", "--porcelain" })) do
-            local path = line:match("^worktree (.+)")
-            if path then
-              table.insert(paths, path)
-            end
-          end
-          vim.ui.select(paths, {
-            prompt = "Worktree",
-            format_item = function(p)
-              return vim.fn.fnamemodify(p, ":~")
-            end,
-          }, function(path)
-            if path then
-              vim.cmd.cd(path)
-              vim.notify("cwd: " .. vim.fn.fnamemodify(path, ":~"))
-            end
+          pick_worktree(function(path)
+            vim.cmd.cd(path)
+            vim.notify("cwd: " .. vim.fn.fnamemodify(path, ":~"))
           end)
         end,
         desc = "Switch worktree",
