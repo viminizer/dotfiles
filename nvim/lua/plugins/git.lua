@@ -11,7 +11,15 @@ return {
     opts = {
       -- One pane with deleted lines shown above the new ones, like GitHub,
       -- instead of old and new files side by side.
-      diff = { layout = "inline" },
+      diff = {
+        layout = "inline",
+        -- Both are off by default, which leaves an added file looking like any
+        -- other file: the only hint is the A in the explorer.
+        highlight_added_deleted_files = true,
+        -- Must be a table; `true` is silently ignored. The inline layout only
+        -- signs whole added or deleted files, not changed lines.
+        gutter_signs = {},
+      },
     },
     keys = {
       {
