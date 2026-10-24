@@ -24,7 +24,6 @@ vim.g.root_spec = {
 vim.g.lazyvim_prettier_needs_config = true
 
 -- Only options that differ from the LazyVim/nvim defaults belong here.
-vim.opt.relativenumber = false -- LazyVim enables relative line numbers
 vim.opt.breakindent = true
 vim.opt.wrap = true -- LazyVim disables wrap
 vim.opt.autowriteall = true -- LazyVim sets autowrite; this also writes on :bnext, :make, etc.
@@ -32,6 +31,7 @@ vim.opt.softtabstop = 2
 vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:hor25,r-cr-o:hor20"
 vim.opt.inccommand = "split" -- LazyVim uses "nosplit"
 vim.opt.scrolloff = 8 -- LazyVim uses 4
+vim.opt.relativenumber = false -- LazyVim turns it on
 vim.opt.concealcursor = "nc"
 -- Visible boundaries between debugger panels and other editor splits.
 vim.opt.fillchars:append({
