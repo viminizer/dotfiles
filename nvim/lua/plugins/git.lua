@@ -20,6 +20,11 @@ return {
         -- signs whole added or deleted files, so config below adds the rest.
         gutter_signs = {},
       },
+      highlights = {
+        -- carbonfox's DiffDelete (#311d26) is a dim purple that barely shows
+        -- against the background. The word-level red is derived from this.
+        line_delete = "#4a1c24",
+      },
     },
     config = function(_, opts)
       require("codediff").setup(opts)
