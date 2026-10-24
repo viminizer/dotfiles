@@ -29,6 +29,15 @@ local function diff_against_base(dir)
   local branches = vim.tbl_filter(function(b)
     return not b:match("/HEAD$")
   end, git_lines({ "-C", dir, "branch", "-a", "--format=%(refname:lstrip=2)" }))
+  -- Keep the locally preferred MR bases at the top of the new picker too.
+  local top = 0
+  for _, preferred in ipairs({ "origin/pre-release", "origin/main", "origin/master" }) do
+    local index = vim.fn.index(branches, preferred)
+    if index >= 0 then
+      top = top + 1
+      table.insert(branches, top, table.remove(branches, index + 1))
+    end
+  end
   vim.ui.select(branches, { prompt = "Base branch" }, function(base)
     -- "base..." diffs the working tree against where this branch forked, so
     -- uncommitted work shows and commits that landed on base since do not.
@@ -157,8 +166,9 @@ return {
         "<leader>gw",
         function()
           pick_worktree(function(path)
-            vim.cmd.cd(path)
-            vim.notify("cwd: " .. vim.fn.fnamemodify(path, ":~"))
+            -- Use the existing switch hooks so search roots and the current
+            -- buffer follow the selection, alongside the remote picker UI.
+            require("git-worktree").switch_worktree(path)
           end)
         end,
         desc = "Switch worktree",
