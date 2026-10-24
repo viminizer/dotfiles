@@ -44,7 +44,7 @@ return {
     file_panel = { win_config = { width = 35 } },
   },
   keys = {
-    { "<leader>gD", compare_branch, desc = "Diff Branch Against Base (Diffview)" },
+    { "<leader>gC", compare_branch, desc = "Diff Committed Branch Against Base (Diffview)" },
     { "<leader>gV", "<cmd>DiffviewOpen<cr>", desc = "Diff Local Changes (Diffview)" },
     { "<leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "Branch File History (Diffview)" },
     { "<leader>gq", "<cmd>DiffviewClose<cr>", desc = "Close Diffview" },
