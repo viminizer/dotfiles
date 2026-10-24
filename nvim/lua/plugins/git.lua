@@ -20,9 +20,12 @@ return {
             -- Triple-dot diffs from where this branch forked, so commits that
             -- landed on base since then do not show up as changes here.
             -- --imply-local puts real files on the right, so uncommitted work
-            -- shows and LSP still works.
+            -- shows and LSP still works. -C pins it to the cwd: diffview
+            -- otherwise uses the current buffer's repo, which after <leader>gw
+            -- is still the old worktree, and the diff comes up empty.
             if base then
-              vim.cmd("DiffviewOpen " .. base .. "...HEAD --imply-local")
+              local cwd = vim.fn.fnameescape(vim.fn.getcwd())
+              vim.cmd("DiffviewOpen -C" .. cwd .. " " .. base .. "...HEAD --imply-local")
             end
           end)
         end,
