@@ -7,7 +7,6 @@
   "clangd_extensions.nvim": { "branch": "main", "commit": "78c2ecd659d54972be17aa6ba2deac3c53223b80" },
   "codediff.nvim": { "branch": "main", "commit": "09d9ebef2cc5a5c04db7a349cd6c61bdf84ecc8e" },
   "conform.nvim": { "branch": "master", "commit": "016802de402556da54c36bd7359b441266b01cdd" },
-  "diffview.nvim": { "branch": "main", "commit": "4516612fe98ff56ae0415a259ff6361a89419b0a" },
   "flash.nvim": { "branch": "main", "commit": "5f0f270fdc7c5b0c21d903ee85b9cb06f2ac636a" },
   "friendly-snippets": { "branch": "main", "commit": "6cd7280adead7f586db6fccbd15d2cac7e2188b9" },
   "git-worktree.nvim": { "branch": "main", "commit": "3ad8c17a3d178ac19be925284389c14114638ebb" },
