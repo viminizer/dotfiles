@@ -103,7 +103,49 @@ return {
             },
           },
         },
-        eslint = {},
+        eslint = {
+          on_init = function(client)
+            local root = client.config.root_dir
+            if not root then
+              return
+            end
+            -- Flat-config ESLint does not accept resolvePluginsRelativeTo.
+            if client.settings.useFlatConfig or (client.settings.experimental or {}).useFlatConfig then
+              return
+            end
+            for _, name in ipairs({
+              "eslint.config.js",
+              "eslint.config.mjs",
+              "eslint.config.cjs",
+              "eslint.config.ts",
+              "eslint.config.mts",
+              "eslint.config.cts",
+            }) do
+              if vim.fn.filereadable(root .. "/" .. name) == 1 then
+                return
+              end
+            end
+            for _, name in ipairs({
+              ".eslintrc",
+              ".eslintrc.js",
+              ".eslintrc.cjs",
+              ".eslintrc.yaml",
+              ".eslintrc.yml",
+              ".eslintrc.json",
+            }) do
+              if vim.fn.filereadable(root .. "/" .. name) == 1 then
+                -- A nested worktree can inherit its parent repo's config.
+                -- Resolve their plugins from one installation to avoid the
+                -- repeated "Plugin react was conflicted" diagnostic failure.
+                client.settings.options = vim.tbl_extend("keep", client.settings.options or {}, {
+                  resolvePluginsRelativeTo = root,
+                })
+                client:notify("workspace/didChangeConfiguration", { settings = client.settings })
+                return
+              end
+            end
+          end,
+        },
         rust_analyzer = {
           settings = {
             ["rust-analyzer"] = {
