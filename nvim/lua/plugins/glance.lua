@@ -7,6 +7,7 @@ return {
     keys = {
       { "gl", "<cmd>Glance definitions<cr>", desc = "Peek Definition" },
     },
-    opts = {},
+    -- Off by default, and with the transparent background the peek blends into the buffer.
+    opts = { border = { enable = true } },
   },
 }
