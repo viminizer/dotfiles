@@ -59,4 +59,21 @@ if ($Existing -and -not $Existing.LinkType) {
 }
 New-Item -ItemType SymbolicLink -Force -Path $OrcaKeys -Target $OrcaKeysSrc | Out-Null
 
+# --- neovim ---
+# nvim on Windows reads %LOCALAPPDATA%\nvim, not ~/.config/nvim, so the tracked
+# config is linked there. Windows-only additions (MSVC environment, build.bat,
+# Visual Studio debugging) live in nvim/lua/plugins/windows.lua and do nothing
+# on other platforms. Also a symlink, so also needs Developer Mode.
+winget install -e --id Neovim.Neovim --accept-source-agreements --accept-package-agreements
+if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne -1978335189) {
+  throw "winget install Neovim.Neovim failed ($LASTEXITCODE)"
+}
+$NvimCfg = Join-Path $env:LOCALAPPDATA 'nvim'
+$Existing = Get-Item $NvimCfg -ErrorAction SilentlyContinue
+if ($Existing -and -not $Existing.LinkType) {
+  Move-Item -Force $NvimCfg "$NvimCfg.pre-dotfiles"
+  Write-Host "kept the existing nvim config as $NvimCfg.pre-dotfiles"
+}
+New-Item -ItemType SymbolicLink -Force -Path $NvimCfg -Target (Join-Path $ConfigDir 'nvim') | Out-Null
+
 Write-Host 'done. kanata is running from the tray and starts at login.'
