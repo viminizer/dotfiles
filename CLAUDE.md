@@ -98,6 +98,18 @@ Casks that ship a `.pkg` (`temurin@21`, `karabiner-elements`, `font-sf-pro`)
 shell out to `sudo` and cannot be installed from a non-interactive shell. They
 need a real terminal.
 
+## Windows
+
+`install.ps1` is the Windows counterpart to `install.sh`; the checkout still
+goes in `~/.config`. Keyboard remapping there is kanata (`kanata/kanata.kbd`),
+which ports only the Caps Lock tap-Esc/hold-Control rule from
+`karabiner/karabiner.json` — the file's header says why the rest is left out.
+Validate a change before restarting it:
+
+```powershell
+kanata_windows_tty_winIOv2_x64 --check -c ~/.config/kanata/kanata.kbd
+```
+
 ## Not tracked, and why
 
 - **Fonts.** `Osaka`/`Osaka-Mono` are Apple's, shipped as an on-demand asset

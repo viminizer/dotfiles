@@ -1,0 +1,34 @@
+;; kanata -- the Windows/Linux stand-in for karabiner/karabiner.json.
+;;
+;; Only the Caps Lock rule is ported. The rest of the Karabiner config is
+;; macOS-specific and would be wrong here:
+;;   - Control+Backspace -> Option+Backspace exists because macOS deletes a word
+;;     on Option+Backspace. Windows already does that on Control+Backspace.
+;;   - The per-device Command/Option swaps make PC keyboards act like a Mac
+;;     layout. On Windows those keys are already in the right place.
+;;   - The Chrome Control+, / Control+. tab switch is gated on the frontmost
+;;     app, and kanata has no way to check that on Windows. Done globally, it
+;;     would take Control+, (settings in most editors) away from every app.
+
+(defcfg
+  ;; Leave every key not listed in defsrc alone. Without this, kanata drops
+  ;; unmapped keys whenever a layer is active.
+  process-unmapped-keys yes
+)
+
+(defsrc
+  caps
+)
+
+;; Matches Karabiner's to_if_alone: Esc only if Caps is released with no other
+;; key pressed, and within 1000ms (Karabiner's default
+;; to_if_alone_timeout_milliseconds). tap-hold-press turns into Control as soon
+;; as another key goes down, which is what "lazy" left_control gave on the Mac
+;; -- Caps+w in vim is Control+w straight away, with no 1000ms wait.
+(defalias
+  escctl (tap-hold-press 200 1000 esc lctl)
+)
+
+(deflayer base
+  @escctl
+)
