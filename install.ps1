@@ -39,4 +39,24 @@ $Link.Save()
 Get-Process kanata_windows_* -ErrorAction SilentlyContinue | Stop-Process -Force
 Start-Process -FilePath $Kanata -ArgumentList "-c `"$KanataCfg`"" -WorkingDirectory (Split-Path $KanataCfg)
 
+# --- orca ---
+# Orca only reads ~/.orca/keybindings.json, so the tracked copy is linked there.
+# Ctrl+, / Ctrl+. switch tabs, the same keys the Chrome rule in
+# karabiner/karabiner.json uses on the Mac.
+#
+# Change shortcuts in the tracked file, not in Orca's Settings: Orca saves by
+# writing a temp file and renaming it over this path, which replaces the link
+# with a plain file and quietly cuts it off from the repo. Re-running this
+# script restores the link, keeping Orca's copy alongside it.
+# Symlinks need Developer Mode (or an elevated shell).
+$OrcaKeys = Join-Path $HOME '.orca\keybindings.json'
+$OrcaKeysSrc = Join-Path $ConfigDir 'orca\keybindings.json'
+New-Item -ItemType Directory -Force (Split-Path $OrcaKeys) | Out-Null
+$Existing = Get-Item $OrcaKeys -ErrorAction SilentlyContinue
+if ($Existing -and -not $Existing.LinkType) {
+  Move-Item -Force $OrcaKeys "$OrcaKeys.pre-dotfiles"
+  Write-Host "kept Orca's own keybindings.json as $OrcaKeys.pre-dotfiles"
+}
+New-Item -ItemType SymbolicLink -Force -Path $OrcaKeys -Target $OrcaKeysSrc | Out-Null
+
 Write-Host 'done. kanata is running from the tray and starts at login.'
