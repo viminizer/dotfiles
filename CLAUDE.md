@@ -110,6 +110,12 @@ Validate a change before restarting it:
 kanata_windows_tty_winIOv2_x64 --check -c ~/.config/kanata/kanata.kbd
 ```
 
+Orca shortcuts live in `orca/keybindings.json`, linked to `~/.orca/` by
+`install.ps1`. Edit the tracked file, never Orca's Settings — Orca saves by
+renaming a temp file over the path, which breaks the link. Spell punctuation
+keys as words (`ctrl+comma`, `ctrl+period`): inside a binding list Orca splits
+on `,`, so `"ctrl+,"` is rejected as an invalid format.
+
 ## Not tracked, and why
 
 - **Fonts.** `Osaka`/`Osaka-Mono` are Apple's, shipped as an on-demand asset
