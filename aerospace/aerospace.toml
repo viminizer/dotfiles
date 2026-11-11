@@ -102,15 +102,16 @@ run = 'layout floating'
 if.app-id = 'org.p0deje.Maccy'
 run = 'layout floating'
 
-# Chrome popups (window.open, e.g. HMC mail). They look exactly like a normal
-# window to the Accessibility API (AXStandardWindow, every button enabled), and
-# AeroSpace skips its "no fullscreen button" float check for Chrome, so the
-# title is all there is to match on. It has to be the first title: a popup is
-# detected as "about:blank" and only gets its real one (편지읽기 - ...) about a
-# second later. A normal new window starts as "New Tab", so it still tiles.
+# Chrome popups (window.open, e.g. mail, hybris). They look exactly like a
+# normal window to the Accessibility API (AXStandardWindow, every button
+# enabled), and AeroSpace skips its "no fullscreen button" float check for
+# Chrome, so the title is all there is to match on. It has to be the first
+# title: a popup is detected as "about:blank" (mail) or "Untitled" (hybris
+# KOP 3.0) and only gets its real one about a second later. A normal new window
+# starts as "New Tab", and a dragged-out tab keeps its page title, so both tile.
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
-if.window-title-regex-substring = '^about:blank'
+if.window-title-regex-substring = '^(about:blank|Untitled) - Google Chrome'
 run = 'layout floating'
 
 # Every other new window regrids the workspace (see grid.sh). It has to stay
