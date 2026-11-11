@@ -75,6 +75,22 @@
                                 "type": "basic"
                             }
                         ]
+                    },
+                    {
+                        "description": "Chrome: F5 to reload, as on Windows",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": ["^com\\.google\\.Chrome$"],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": { "key_code": "f5" },
+                                "to": [{ "key_code": "r", "modifiers": ["command"] }],
+                                "type": "basic"
+                            }
+                        ]
                     }
                 ]
             },
