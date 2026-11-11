@@ -8,6 +8,16 @@
 # tree from flat each time. Run from on-window-detected and from alt-g;
 # AeroSpace has no window-closed hook, so after closing one, alt-g tidies up.
 
+# A floating newcomer (password/Touch ID prompt, any dialog AeroSpace floats on
+# its own) changes nothing in the grid, and walking it below moves focus away
+# and back, which makes those prompts flicker and cancel themselves.
+# AEROSPACE_WINDOW_ID is the detected window; it is unset when run from alt-g.
+if [ -n "$AEROSPACE_WINDOW_ID" ] &&
+    aerospace list-windows --all --format '%{window-id} %{window-layout}' |
+    grep -qx "$AEROSPACE_WINDOW_ID floating"; then
+    exit 0
+fi
+
 focused=$(aerospace list-windows --focused --format '%{window-id}') || exit 0
 total=$(aerospace list-windows --workspace focused --count)
 
