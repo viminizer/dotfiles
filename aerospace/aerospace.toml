@@ -111,6 +111,15 @@ run = 'layout floating'
 if.app-id = 'org.p0deje.Maccy'
 run = 'layout floating'
 
+# HMC mail popups. Chrome's popups look exactly like a normal window to the
+# Accessibility API (AXStandardWindow, every button enabled), and AeroSpace
+# skips its "no fullscreen button" float check for Chrome, so the title is all
+# there is to match on. 편지읽기 is the "read mail" window.
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+if.window-title-regex-substring = '^편지읽기'
+run = 'layout floating'
+
 # Every other new window regrids the workspace (see grid.sh). It has to stay
 # last: rules stop at the first match, which is what keeps the floating ones
 # above from regridding. Skipped at startup, when every existing window counts
