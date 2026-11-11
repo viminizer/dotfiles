@@ -91,6 +91,16 @@
                                 "type": "basic"
                             }
                         ]
+                    },
+                    {
+                        "description": "F16 (Keychron top-right key) → lock screen",
+                        "manipulators": [
+                            {
+                                "from": { "key_code": "f16" },
+                                "to": [{ "key_code": "q", "modifiers": ["control", "command"] }],
+                                "type": "basic"
+                            }
+                        ]
                     }
                 ]
             },
