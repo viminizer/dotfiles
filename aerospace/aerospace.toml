@@ -114,6 +114,14 @@ if.app-id = 'com.google.Chrome'
 if.window-title-regex-substring = '^(about:blank|Untitled) - Google Chrome'
 run = 'layout floating'
 
+# Flow chats are opened, read and closed; tiled, each one would regrid the
+# workspace. Same first-title catch as Chrome: a chat is detected as just
+# "flow" and only becomes "<room> - Chat (n)" a moment later.
+[[on-window-detected]]
+if.app-id = 'com.madrascheck.flow'
+if.window-title-regex-substring = '^flow$'
+run = 'layout floating'
+
 # Every other new window regrids the workspace (see grid.sh). It has to stay
 # last: rules stop at the first match, which is what keeps the floating ones
 # above from regridding. Skipped at startup, when every existing window counts
