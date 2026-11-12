@@ -96,6 +96,7 @@ alias la='eza -la --group-directories-first'
 alias ll='eza -lah --group-directories-first --git'
 alias tree='eza --tree --group-directories-first --level=2'
 alias danger='claude --dangerously-skip-permissions'
+alias kk='danger'
 
 # -------------------------
 # Java
@@ -190,6 +191,10 @@ alias lg='lazygit'
 # -------------------------
 # Codex with no approval prompts and no sandbox (mirrors `danger` for Claude).
 alias dangerx='codex --dangerously-bypass-approvals-and-sandbox'
+alias jj='dangerx'
+
+# Hermes Agent
+alias hh="$HOME/.local/bin/hermes"
 
 # -------------------------
 # asdf
@@ -201,3 +206,4 @@ alias dangerx='codex --dangerously-bypass-approvals-and-sandbox'
 # nvm's default node. Without that global entry the shim errors out instead of
 # falling through, so node breaks outside asdf-managed projects.
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+alias gg='germes'
