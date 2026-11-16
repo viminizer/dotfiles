@@ -1,6 +1,6 @@
 # Windows counterpart to install.sh. Safe to re-run.
 #
-#   git clone <repo> ~/.config; pwsh ~/.config/install.ps1
+#   git clone --branch windows <repo> ~/.config; pwsh ~/.config/install.ps1
 #
 # install.sh is macOS-only (brew, launchd, defaults), so Windows gets its own
 # script instead of a branch of that one.
