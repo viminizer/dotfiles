@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "keybindings": {
+    "tab.previousAllTypes": ["ctrl+comma", "ctrl+shift+bracketleft"],
+    "tab.nextAllTypes": ["ctrl+period", "ctrl+shift+bracketright"]
+  },
+  "platforms": {
+    "darwin": {},
+    "linux": {},
+    "win32": {}
+  }
+}
